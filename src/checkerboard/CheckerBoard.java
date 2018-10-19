@@ -25,9 +25,9 @@ public class CheckerBoard extends JPanel {
         houseSide = 60;
         houses = new HashMap<>();
 
-        blackHouseColor = new Color(133, 94, 66);
-        playerColor = Color.DARK_GRAY;
-        whiteHouseColor = blackHouseColor.brighter().brighter();
+        blackHouseColor = Color.BLACK;
+        playerColor = Color.RED.darker();
+        whiteHouseColor = Color.WHITE;
         oponentColor = Color.LIGHT_GRAY;
 
         setLayout(null);

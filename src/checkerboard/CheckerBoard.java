@@ -65,6 +65,8 @@ public class CheckerBoard extends JPanel {
                 add(house);
             }
         }
+        
+        houses.get((rows - 6) * (cols + 1)).setContentType(2);
     }
 
     public int getHouseSide() {

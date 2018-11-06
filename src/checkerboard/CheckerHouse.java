@@ -5,16 +5,18 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.EventListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 
 import javax.swing.JPanel;
 
@@ -68,6 +70,7 @@ public class CheckerHouse extends JPanel {
     private int row;
     private int col;
 
+
     /**
      * Cria uma casa de tabuleiro. Esta casa pode ser vazia, conter uma pedra
      * comum ou dama. Em relação à seleção, pode ou não estar selecionada e
@@ -88,12 +91,28 @@ public class CheckerHouse extends JPanel {
         fgColor = Color.WHITE.darker();
 
         selectionBorder = new BasicStroke(margin / 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        selectionColor = new Color(0, 200, 0);
+        selectionColor = Color.GREEN;
 
         this.row = row;
         this.col = col;
 
         setLayout(null);
+//        addMouseListener(new MouseAdapter() {
+//            private Color background;
+//
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (selectionMode == CheckerHouse.SELECTION_MODE_SELECTED) {
+//                    selectionMode = CheckerHouse.SELECTION_MODE_NONE;
+//                } else {
+//                    selectionMode = CheckerHouse.SELECTION_MODE_SELECTED;
+//
+//                }
+//                repaint();
+//            }
+//
+//        });
+
     }
 
     @Override
@@ -207,12 +226,14 @@ public class CheckerHouse extends JPanel {
         g2D.setColor(fgColor.brighter());
         Ellipse2D.Float circle6 = new Ellipse2D.Float(circle2.x - 0.4f * margin - 2, circle2.y - 0.4f * margin - 2, circle2.width, circle2.height);
         g2D.fill(circle6);
-        
+
         try {
             BufferedImage img = ImageIO.read(getClass().getResource("/Imagem/coroa.png"));
-            g2D.drawImage(img, new AffineTransform(1f,0f,0f,1f,circle2.x - 0.4f * margin - 2, circle2.y - 0.4f * margin - 2), null);
+            g2D.drawImage(img, new AffineTransform(1f, 0f, 0f, 1f, circle2.x - 0.4f * margin - 2, circle2.y - 0.4f * margin - 2), null);
+
         } catch (IOException ex) {
-            Logger.getLogger(CheckerHouse.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CheckerHouse.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 

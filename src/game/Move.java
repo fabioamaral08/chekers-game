@@ -12,7 +12,7 @@ import java.awt.Point;
  *
  * @author gustavo
  */
-public class Move {
+public class Move implements Comparable<Move> {
 
     //Posição da peça a jogar;
     private Point curPos;
@@ -20,11 +20,18 @@ public class Move {
     private int piecesTaken;
     //Posições a serem percorridas nesse movimento;
     private List<Point> path;
+    //Board final
+    private int[][] board;
 
-    public Move(Point curPos, int piecesTaken, List<Point> path) {
+    public Move(Point curPos, int piecesTaken, List<Point> path, int[][] board) {
         this.curPos = curPos;
         this.piecesTaken = piecesTaken;
         this.path = path;
+        this.board = board;
+    }
+
+    public int[][] getBoard() {
+        return board;
     }
 
     public Point getCurPos() {
@@ -35,8 +42,22 @@ public class Move {
         return piecesTaken;
     }
 
-    public List getPath() {
+    public List<Point> getPath() {
         return path;
+    }
+
+
+
+    @Override
+    public int compareTo(Move o) {
+        if (this.piecesTaken < o.piecesTaken) {
+            return 1;
+        }
+        if (this.piecesTaken > o.piecesTaken) {
+            return -1;
+        }
+
+        return 0;
     }
 
 }

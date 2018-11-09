@@ -5,18 +5,17 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.EventListener;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 
 import javax.swing.JPanel;
 
@@ -58,10 +57,20 @@ public class CheckerHouse extends JPanel {
     public static final int SELECTION_MODE_MOVE = 2;
 
     private float margin;
+    private List<int[][]> board;
+
+    public List<int[][]> getBoard() {
+        return board;
+    }
+
+    public void setBoard(List<int[][]> board) {
+        this.board = board;
+    }
 
     private Color bgColor;
     private Color fgColor;
     private Color selectionColor;
+    private Color pathColor;
 
     private int contentType;
     private int selectionMode;
@@ -69,7 +78,6 @@ public class CheckerHouse extends JPanel {
 
     private int row;
     private int col;
-
 
     /**
      * Cria uma casa de tabuleiro. Esta casa pode ser vazia, conter uma pedra
@@ -86,6 +94,8 @@ public class CheckerHouse extends JPanel {
         margin = 9;
         contentType = CheckerHouse.CONTENT_TYPE_EMPTY;
         selectionMode = CheckerHouse.SELECTION_MODE_NONE;
+        
+        board = new LinkedList();        
 
         bgColor = Color.WHITE;
         fgColor = Color.WHITE.darker();
@@ -127,7 +137,7 @@ public class CheckerHouse extends JPanel {
             g2D.setColor(selectionColor);
             drawSelectionRect(g2D);
         } else if (selectionMode == CheckerHouse.SELECTION_MODE_MOVE) {
-            g2D.setColor(selectionColor.brighter());
+            g2D.setColor(pathColor);
             drawSelectionRect(g2D);
         }
 
@@ -189,6 +199,8 @@ public class CheckerHouse extends JPanel {
 
         g2D.draw(rect);
     }
+       
+    
 
     /**
      * Desenha uma pedra to tipo dama. Para alterar a cor da pedra veja utilize
@@ -270,6 +282,12 @@ public class CheckerHouse extends JPanel {
     public void setSelectionBorder(BasicStroke selectionBorder) {
         this.selectionBorder = selectionBorder;
         repaint();
+    }
+
+    public void setPathColor(Color color) {
+        this.pathColor = color;
+       
+
     }
 
     public Color getBgColor() {

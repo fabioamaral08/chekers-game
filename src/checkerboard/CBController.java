@@ -5,7 +5,10 @@
  */
 package checkerboard;
 
+import game.Game;
+import game.Move;
 import java.awt.Point;
+import java.util.List;
 
 /**
  *
@@ -13,18 +16,19 @@ import java.awt.Point;
  */
 public class CBController {
 
+    private Game g;
+
     public CBController() {
+        this.g = new Game();
     }
-    
-    public int[][] movePiece (Point a, Point b, int houseSide){
-        int[][] gameBoard = null;
-        int rowA = a.x / houseSide;
-        int colA = a.y / houseSide;
-        int rowB = b.x / houseSide;
-        int colB = b.y / houseSide;
-        
-        return gameBoard;        
-        
+
+    public void movePiece(int[][] board) {
+      this.g.setBoard(board);
     }
-    
+
+    public List possiblesPlays(Point pos, int houseSide) {
+        Point p = new Point(pos.y / houseSide, pos.x / houseSide);
+        return this.g.moveInit(p);
+    }
+
 }

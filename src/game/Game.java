@@ -16,20 +16,45 @@ import java.util.LinkedList;
  * @author gustavo
  */
 public class Game {
+    private int[][] board = {
+    { 0, -1,  0, -1,  0, -1,  0, -1},
+    {-1,  0, -1,  0, -1,  0, -1,  0},
+    { 0, -1,  0, -1,  0, -1,  0, -1},
+    { 0,  0,  0,  0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0,  0,  0,  0},
+    { 1,  0,  1,  0,  1,  0,  1,  0},
+    { 0,  1,  0,  1,  0,  1,  0,  1},
+    { 1,  0,  1,  0,  1,  0,  1,  0}};
+    
+    /*{
+    { 0, -1,  0, -1,  0, -1,  0, -1},
+    {-1,  0,  0,  0,  0,  0,  0,  0},
+    { 0, -1,  0, -1,  0, -1,  0, -1},
+    { 0,  0,  0,  0,  0,  0,  0,  0},
+    { 0,  0,  0, -1,  0, -1,  0,  0},
+    { 1,  0,  0,  0,  0,  0,  0,  0},
+    { 0,  1,  0, -1,  0, -1,  0,  1},
+    { 1,  0,  1,  0,  1,  0,  1,  0}};
+    */
+            
+            
+    /*{
+    { 0, -1,  0, -1,  0, -1,  0, -1},
+    {-1,  0, -1,  0, -1,  0, -1,  0},
+    { 0, -1,  0, -1,  0, -1,  0, -1},
+    { 0,  0,  0,  0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0,  0,  0,  0},
+    { 1,  0,  1,  0,  1,  0,  1,  0},
+    { 0,  1,  0,  1,  0,  1,  0,  1},
+    { 1,  0,  1,  0,  1,  0,  1,  0}};
+    */
 
-    private int[][] board = {{0, -1, 0, -1, 0, -1, 0, -1},
-    {0, 0, -1, 0, 0, 0, -1, 0},
-    {0, -1, 0, -1, 0, -1, 0, -1},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {1, 0, 1, 0, 1, 0, 1, 0},
-    {0, 1, 0, 1, 0, 1, 0, 1},
-    {1, 0, 1, 0, 1, 0, 1, 0}};
 
     public Game() {
 
     }
-
+    
+    
     public int borderChecker(int i, int j, int[][] board) {
         if (i < 0 || j < 0 || i > 7 || j > 7) {
             return 1;
@@ -103,7 +128,9 @@ public class Game {
     }
 
     private void moveTake(Point pos, int[][] newBoard, int piecesTaken, List<Point> path, List<Move> moves) {
-        path.add(pos);
+        List<Point> newPath = new LinkedList();
+        newPath.addAll(path);
+        newPath.add(pos);
         int[][] newBoard1 = newBoard;
         int piece;
         for (int i = -1; i <= 1; i = i + 2) {
@@ -118,13 +145,13 @@ public class Game {
                         newBoard1[pos.x + i][pos.y + j] = 0;
                         newBoard1[pos.x][pos.y] = 0;
                         newBoard1[pos.x + 2 * i][pos.y + 2 * j] = 1;
-                        moveTake(p, newBoard1, piecesTaken + 1, path, moves); //Verifica os caminhos
+                        moveTake(p, newBoard1, piecesTaken + 1, newPath, moves); //Verifica os caminhos
                     }
                 }//if
             }
         }//for
 
-        moves.add(new Move(pos, piecesTaken, path, newBoard1));
+        moves.add(new Move(pos, piecesTaken, newPath, newBoard1));
     }
 
     public void setBoard(int[][] board) {

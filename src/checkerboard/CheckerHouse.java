@@ -70,11 +70,15 @@ public class CheckerHouse extends JPanel {
     private Color bgColor;
     private Color fgColor;
     private Color selectionColor;
-    private Color pathColor;
+    private List<Color> pathColor;
 
     private int contentType;
     private int selectionMode;
     private BasicStroke selectionBorder;
+
+    public List<Color> getPathColor() {
+        return pathColor;
+    }
 
     private int row;
     private int col;
@@ -91,12 +95,13 @@ public class CheckerHouse extends JPanel {
      * internamente. Não apresenta qualquer influencia nessa classe.
      */
     public CheckerHouse(int row, int col) {
-        margin = 9;
+        margin = 10;
         contentType = CheckerHouse.CONTENT_TYPE_EMPTY;
         selectionMode = CheckerHouse.SELECTION_MODE_NONE;
-        
-        board = new LinkedList();        
 
+        board = new LinkedList();
+
+        pathColor = new LinkedList();
         bgColor = Color.WHITE;
         fgColor = Color.WHITE.darker();
 
@@ -133,12 +138,22 @@ public class CheckerHouse extends JPanel {
         g2D.setBackground(bgColor);
         g2D.clearRect(0, 0, getWidth(), getHeight());
 
-        if (selectionMode == CheckerHouse.SELECTION_MODE_SELECTED) {
-            g2D.setColor(selectionColor);
-            drawSelectionRect(g2D);
-        } else if (selectionMode == CheckerHouse.SELECTION_MODE_MOVE) {
-            g2D.setColor(pathColor);
-            drawSelectionRect(g2D);
+        if (pathColor.size() == 1) {
+
+            if (selectionMode == CheckerHouse.SELECTION_MODE_SELECTED) {
+                g2D.setColor(selectionColor);
+                drawSelectionRect(g2D, 0);
+            } else if (selectionMode == CheckerHouse.SELECTION_MODE_MOVE) {
+                g2D.setColor(pathColor.get(0));
+                drawSelectionRect(g2D, 0);
+            }
+        } else {
+            int i = 0;
+            for (Color c : pathColor) {
+                g2D.setColor(c);
+                drawSelectionRect(g2D , i);
+                i += 5;
+            }
         }
 
         if (contentType == CheckerHouse.CONTENT_TYPE_MEN) {
@@ -192,15 +207,13 @@ public class CheckerHouse extends JPanel {
      *
      * @param g2D Contexto gráfico do componente.
      */
-    protected void drawSelectionRect(Graphics2D g2D) {
-        Rectangle2D rect = new Rectangle2D.Float(selectionBorder.getLineWidth() / 2.0f, selectionBorder.getLineWidth() / 2.0f, getWidth() - selectionBorder.getLineWidth(), getHeight() - selectionBorder.getLineWidth());
+    protected void drawSelectionRect(Graphics2D g2D, int i) {
+        Rectangle2D rect = new Rectangle2D.Float(selectionBorder.getLineWidth() / 2.0f + i, selectionBorder.getLineWidth() / 2.0f + i, getWidth() - selectionBorder.getLineWidth() - 2*i, getHeight() - selectionBorder.getLineWidth() - 2*i);
 
         g2D.setStroke(selectionBorder);
 
         g2D.draw(rect);
     }
-       
-    
 
     /**
      * Desenha uma pedra to tipo dama. Para alterar a cor da pedra veja utilize
@@ -284,10 +297,8 @@ public class CheckerHouse extends JPanel {
         repaint();
     }
 
-    public void setPathColor(Color color) {
+    public void setPathColor(List<Color> color) {
         this.pathColor = color;
-       
-
     }
 
     public Color getBgColor() {

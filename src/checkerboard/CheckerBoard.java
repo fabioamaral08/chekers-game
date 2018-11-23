@@ -1,18 +1,26 @@
 package checkerboard;
 
 import game.Move;
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.scene.shape.Path;
+import javax.swing.BorderFactory;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.border.Border;
 
 public class CheckerBoard extends JPanel {
 
@@ -33,7 +41,7 @@ public class CheckerBoard extends JPanel {
         this.rows = rows;
         this.cols = cols;
 
-        houseSide = 60;
+        houseSide = 70;
         houses = new HashMap<>();
 
         cb = new CBController();
@@ -79,7 +87,9 @@ public class CheckerBoard extends JPanel {
             for (Point p : moves.get(i).getPath()) {
                 ch = getHouseAt(p.x, p.y);
                 ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
-                ch.setPathColor(colors.get(i));
+                if (!ch.getPathColor().contains(colors.get(i))) {
+                    ch.getPathColor().add(colors.get(i));
+                }
                 ch.getBoard().add(moves.get(i).getBoard());
             }
         }
@@ -89,12 +99,12 @@ public class CheckerBoard extends JPanel {
     public ArrayList<Color> getColors() {
         ArrayList<Color> colors = new ArrayList();
 
-        colors.add(Color.PINK);
+        colors.add(Color.GREEN.darker());
         colors.add(Color.BLUE);
-        colors.add(Color.MAGENTA);
-        colors.add(Color.ORANGE);
-        colors.add(Color.CYAN);
         colors.add(Color.YELLOW);
+        colors.add(Color.CYAN);
+        colors.add(Color.ORANGE);
+        colors.add(Color.MAGENTA);
         colors.add(Color.RED);
 
         return colors;
@@ -103,12 +113,12 @@ public class CheckerBoard extends JPanel {
     public void movePiece(Point a, Point b) {
         CheckerHouse chB = getHouseAt(b.y / houseSide, b.x / houseSide);
         CheckerHouse chA = getHouseAt(a.y / houseSide, a.x / houseSide);
-        
+
         if (chA.getContentType() == CheckerHouse.CONTENT_TYPE_EMPTY || chA == chB) {
             houseSelected(b.x, b.y);
             return;
         }
-        
+
         if (chB.getSelectionMode() == CheckerHouse.SELECTION_MODE_MOVE) {
             Color c = chA.getFgColor();
 
@@ -117,13 +127,31 @@ public class CheckerBoard extends JPanel {
             List<int[][]> moves = chB.getBoard();
             if (moves.size() == 1) {
                 int[][] gameBoard = moves.get(0);
-                this.setSelectionModeNone();
                 this.cb.movePiece(gameBoard);
+                setSelectionModeNone();
                 repaintBoard(gameBoard);
+            } else {
+                JPopupMenu jPopupMenu = new JPopupMenu();
+                JMenuItem jMenuItem;
+                int i = 1;
+                
+                for (Color color: chB.getPathColor()) {
+                    jMenuItem = new JMenuItem();
+                    jMenuItem.setText("Caminho " + i);
+                    jMenuItem.setBorder(BorderFactory.createLineBorder(color, 3));
+                    i++;
+                    jPopupMenu.add(jMenuItem);
+                        
+                }
+                jPopupMenu.setLocation(p.x + (houseSide * 4), p.y + 10);
+                jPopupMenu.setVisible(true);
+
+
             }
 
         } else {
             JOptionPane.showMessageDialog(null, "Esse movimento não é permitido!");
+            setSelectionModeNone();
         }
         p = null;
 
@@ -185,6 +213,7 @@ public class CheckerBoard extends JPanel {
         for (CheckerHouse ch : this.houses.values()) {
             ch.setSelectionMode(CheckerHouse.SELECTION_MODE_NONE);
             ch.getBoard().clear();
+            ch.getPathColor().clear();
         }
     }
 

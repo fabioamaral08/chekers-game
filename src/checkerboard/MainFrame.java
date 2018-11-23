@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
 
 
 	public MainFrame() {
-		setSize(new Dimension(640, 520));
+		setSize(new Dimension(640, 640));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package game;
 
 import java.util.List;
@@ -26,7 +22,7 @@ public class Game {
     { 0,  1,  0,  1,  0,  1,  0,  1},
     { 1,  0,  1,  0,  1,  0,  1,  0}};
     
-    /*{
+    /* Para teste{
     { 0, -1,  0, -1,  0, -1,  0, -1},
     {-1,  0,  0,  0,  0,  0,  0,  0},
     { 0, -1,  0, -1,  0, -1,  0, -1},
@@ -38,7 +34,7 @@ public class Game {
     */
             
             
-    /*{
+    /* Para teste{
     { 0, -1,  0, -1,  0, -1,  0, -1},
     {-1,  0, -1,  0, -1,  0, -1,  0},
     { 0, -1,  0, -1,  0, -1,  0, -1},
@@ -62,6 +58,12 @@ public class Game {
         return board[i][j];
     }
 
+    /**
+     * Primeiro movimento de uma peça normal, antes de começar a tomar outras peças
+     * 
+     * @param pos Point
+     * @return List de movimentos
+     */
     public List moveInit(Point pos) {
         List<Move> moves = new ArrayList();
         List<Point> path;
@@ -103,7 +105,13 @@ public class Game {
         return (moves);
     }
 
-    public List<Move> sort(List<Move> moves) {
+    /**
+     * Ordena os movimentos de acordo com o número de peças que tomam do adversário
+     * 
+     * @param moves List<Move>
+     * @return List<Move>
+     */
+    private List<Move> sort(List<Move> moves) {
         Collections.sort(moves);
 
         int maxPieces = moves.get(0).getPiecesTaken();
@@ -117,7 +125,13 @@ public class Game {
 
     }
 
-    public int[][] cloneBoard(int[][] clonedBoard) {
+    /**
+     * Cria uma cópia do tabuleiro
+     * 
+     * @param clonedBoard int[][]
+     * @return int[][] tabuleiro
+     */
+    private int[][] cloneBoard(int[][] clonedBoard) {
         int[][] newBoard = new int[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -127,6 +141,15 @@ public class Game {
         return newBoard;
     }
 
+    /**
+     * Parte do movimento onde a peça escolhida esta tomando peças do adversário
+     * 
+     * @param pos Point posição da peça
+     * @param newBoard int[][]
+     * @param piecesTaken int
+     * @param path List<Point>
+     * @param moves List<Move>
+     */
     private void moveTake(Point pos, int[][] newBoard, int piecesTaken, List<Point> path, List<Move> moves) {
         List<Point> newPath = new LinkedList();
         newPath.addAll(path);
@@ -154,6 +177,11 @@ public class Game {
         moves.add(new Move(pos, piecesTaken, newPath, newBoard1));
     }
 
+    /**
+     * Seta o tabuleiro depois de uma jogada
+     * 
+     * @param board 
+     */
     public void setBoard(int[][] board) {
         this.board = board;
     }

@@ -31,4 +31,8 @@ public class CBController {
         return this.g.moveInit(p);
     }
 
+    public void setBoard(int[][] board) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

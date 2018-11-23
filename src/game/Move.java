@@ -7,21 +7,23 @@ package game;
 
 import java.util.List;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *
  * @author gustavo
  */
-public class Move implements Comparable<Move> {
-
+public class Move implements Comparable<Move>, Serializable {
+    private static final long serialVersionUID = 1L;
+    
     //Posição da peça a jogar;
-    private Point curPos;
+    private final Point curPos;
     //Número de peças comidas nesse movimento;
-    private int piecesTaken;
+    private final int piecesTaken;
     //Posições a serem percorridas nesse movimento;
-    private List<Point> path;
+    private final List<Point> path;
     //Board final
-    private int[][] board;
+    private final int[][] board;
 
     public Move(Point curPos, int piecesTaken, List<Point> path, int[][] board) {
         this.curPos = curPos;

@@ -83,7 +83,8 @@ public class CheckerBoard extends JPanel {
      */
     public void possiblePlays(Point pos) {
         CheckerHouse ch;
-        if ((ch = getHouseAt(pos.x, pos.y)).getContentType() == CheckerHouse.CONTENT_TYPE_KING) {
+        ch = getHouseAt(pos.x / houseSide, pos.y / houseSide); 
+        if (ch.getContentType() == CheckerHouse.CONTENT_TYPE_KING) {
             possibleKingPlays(pos);
             return;
         }
@@ -326,17 +327,6 @@ public class CheckerBoard extends JPanel {
                 add(house);
             }
         }
-
-        int[][] board = {
-            {0, -1, 0, -1, 0, -1, 0, -1},
-            {-1, 0, 0, 0, 0, 0, 0, 0},
-            {0, -1, 0, -1, 0, -1, 0, -1},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, -1, 0, -1, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0},
-            {0, 1, 0, -1, 0, -1, 0, 1},
-            {1, 0, 1, 0, 1, 0, 1, 0}};
-        this.cb.movePiece(board);
 
     }
 

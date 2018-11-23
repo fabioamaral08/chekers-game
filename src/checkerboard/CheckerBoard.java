@@ -83,7 +83,7 @@ public class CheckerBoard extends JPanel {
      */
     public void possiblePlays(Point pos) {
         CheckerHouse ch;
-        ch = getHouseAt(pos.x / houseSide, pos.y / houseSide); 
+        ch = getHouseAt(pos.y / houseSide, pos.x / houseSide);
         if (ch.getContentType() == CheckerHouse.CONTENT_TYPE_KING) {
             possibleKingPlays(pos);
             return;
@@ -407,13 +407,23 @@ public class CheckerBoard extends JPanel {
         ArrayList<Color> colors = getColors();
 
         for (int i = 0; i < moves.size(); i++) {
-            for (Point p : moves.get(i).getPath()) {
+            if (moves.get(i).getPiecesTaken() == 0) {
+                Point p = moves.get(i).getPath().get(moves.get(i).getPath().size() - 1);
                 ch = getHouseAt(p.x, p.y);
                 ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
-                if (!ch.getPathColor().contains(colors.get(i)) && moves.get(i).getPiecesTaken() != 0) {
-                    ch.getPathColor().add(colors.get(i));
+                if (!ch.getPathColor().contains(colors.get(0))) {
+                    ch.getPathColor().add(colors.get(0));
                 }
                 ch.getBoard().add(moves.get(i).getBoard());
+            } else {
+                for (Point p : moves.get(i).getPath()) {
+                    ch = getHouseAt(p.x, p.y);
+                    ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
+                    if (!ch.getPathColor().contains(colors.get(i))) {
+                        ch.getPathColor().add(colors.get(i));
+                    }
+                    ch.getBoard().add(moves.get(i).getBoard());
+                }
             }
         }
     }

@@ -13,18 +13,38 @@ import java.io.Serializable;
  *
  * @author gustavo
  */
-public class Move implements Comparable<Move>, Serializable {
-    private static final long serialVersionUID = 1L;
-    
-    //Posição da peça a jogar;
-    private final Point curPos;
-    //Número de peças comidas nesse movimento;
-    private final int piecesTaken;
-    //Posições a serem percorridas nesse movimento;
-    private final List<Point> path;
-    //Board final
-    private final int[][] board;
 
+public class Move implements Comparable<Move> {
+
+    /**
+     * Posição da peça a jogar
+     */
+    private Point curPos;
+    
+    /**
+     * Número de peças comidas nesse movimento
+     */
+    private int piecesTaken;
+    
+    /**
+     * Posições a serem percorridas nesse movimento
+     */
+    private List<Point> path;
+    
+    /**
+     * Board final
+     */
+    private int[][] board;
+
+
+    /**
+     * Construtor da classe
+     * 
+     * @param curPos int
+     * @param piecesTaken int
+     * @param path List<Path>
+     * @param board int[][]
+     */
     public Move(Point curPos, int piecesTaken, List<Point> path, int[][] board) {
         this.curPos = curPos;
         this.piecesTaken = piecesTaken;

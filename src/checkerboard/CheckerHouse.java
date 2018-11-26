@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -57,15 +58,8 @@ public class CheckerHouse extends JPanel {
     public static final int SELECTION_MODE_MOVE = 2;
 
     private float margin;
+    private List<Point> paths;
     private List<int[][]> board;
-
-    public List<int[][]> getBoard() {
-        return board;
-    }
-
-    public void setBoard(List<int[][]> board) {
-        this.board = board;
-    }
 
     private Color bgColor;
     private Color fgColor;
@@ -100,6 +94,7 @@ public class CheckerHouse extends JPanel {
         selectionMode = CheckerHouse.SELECTION_MODE_NONE;
 
         board = new LinkedList();
+        paths = new LinkedList();
 
         pathColor = new LinkedList();
         bgColor = Color.WHITE;
@@ -151,7 +146,7 @@ public class CheckerHouse extends JPanel {
             int i = 0;
             for (Color c : pathColor) {
                 g2D.setColor(c);
-                drawSelectionRect(g2D , i);
+                drawSelectionRect(g2D, i);
                 i += 5;
             }
         }
@@ -208,7 +203,7 @@ public class CheckerHouse extends JPanel {
      * @param g2D Contexto gráfico do componente.
      */
     protected void drawSelectionRect(Graphics2D g2D, int i) {
-        Rectangle2D rect = new Rectangle2D.Float(selectionBorder.getLineWidth() / 2.0f + i, selectionBorder.getLineWidth() / 2.0f + i, getWidth() - selectionBorder.getLineWidth() - 2*i, getHeight() - selectionBorder.getLineWidth() - 2*i);
+        Rectangle2D rect = new Rectangle2D.Float(selectionBorder.getLineWidth() / 2.0f + i, selectionBorder.getLineWidth() / 2.0f + i, getWidth() - selectionBorder.getLineWidth() - 2 * i, getHeight() - selectionBorder.getLineWidth() - 2 * i);
 
         g2D.setStroke(selectionBorder);
 
@@ -351,6 +346,22 @@ public class CheckerHouse extends JPanel {
 
     public void setCol(int col) {
         this.col = col;
+    }
+
+    public List<Point> getPaths() {
+        return paths;
+    }
+
+    public void setPaths(List<Point> paths) {
+        this.paths = paths;
+    }
+
+    public List<int[][]> getBoard() {
+        return board;
+    }
+
+    public void setBoard(List<int[][]> board) {
+        this.board = board;
     }
 
     @Override

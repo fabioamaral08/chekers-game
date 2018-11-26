@@ -145,7 +145,7 @@ public class CheckerBoard extends JPanel {
             chA.setSelectionMode(CheckerHouse.SELECTION_MODE_NONE);
             chA.setFgColor(c);
             List<int[][]> moves = chB.getBoard();
-            if (moves.size() == 1) {
+            if (moves.size() == 1 || chB.getPathColor().size() == 1) {
                 int[][] gameBoard = moves.get(0);
                 this.cb.movePiece(gameBoard);
                 setSelectionModeNone();
@@ -156,7 +156,7 @@ public class CheckerBoard extends JPanel {
                 int i = 0;
 
                 for (Color color : chB.getPathColor()) {
-                    createPopupMenuItem(moves.get(i), color, i);
+                    createPopupMenuItem(moves.get(i), color, i, chB.getPaths().get(i));
                     i++;
 
                 }
@@ -181,10 +181,10 @@ public class CheckerBoard extends JPanel {
      * @param color Cor do caminho
      * @param i Numero do caminho
      */
-    public void createPopupMenuItem(int[][] moves, Color color, int i) {
+    public void createPopupMenuItem(int[][] moves, Color color, int i, Point p) {
         JMenuItem jMenuItem = new JMenuItem();
         jMenuItem.setName("Caminho_" + i);
-        jMenuItem.setText("Caminho " + i);
+        jMenuItem.setText("Caminho " + i + " (" + p.x + "," + p.y + ")");
         jMenuItem.setBorder(BorderFactory.createLineBorder(color, 3));
         jPopupMenu.add(jMenuItem);
         jMenuItem.addMouseListener(new MouseListener() {
@@ -402,17 +402,20 @@ public class CheckerBoard extends JPanel {
     }
 
     private void possibleKingPlays(Point pos) {
-        CheckerHouse ch;
+        int last;
+        CheckerHouse ch = null;
         List<Move> moves = this.cb.possiblesPlays(pos, houseSide);
         ArrayList<Color> colors = getColors();
 
         for (int i = 0; i < moves.size(); i++) {
+            last = moves.get(i).getPath().size() - 1;
             if (moves.get(i).getPiecesTaken() == 0) {
                 Point p = moves.get(i).getPath().get(moves.get(i).getPath().size() - 1);
                 ch = getHouseAt(p.x, p.y);
                 ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
                 if (!ch.getPathColor().contains(colors.get(0))) {
                     ch.getPathColor().add(colors.get(0));
+                    ch.getPaths().add(moves.get(i).getPath().get(last));
                 }
                 ch.getBoard().add(moves.get(i).getBoard());
             } else {
@@ -421,10 +424,13 @@ public class CheckerBoard extends JPanel {
                     ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
                     if (!ch.getPathColor().contains(colors.get(i))) {
                         ch.getPathColor().add(colors.get(i));
+                        ch.getPaths().add(moves.get(i).getPath().get(last));
+                        ch.getBoard().add(moves.get(i).getBoard());
                     }
-                    ch.getBoard().add(moves.get(i).getBoard());
+
                 }
             }
+
         }
     }
 

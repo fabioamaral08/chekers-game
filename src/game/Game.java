@@ -41,9 +41,9 @@ public class Game {
     { 0,  1,  0,  1,  0,  1,  0,  1},
     { 1,  0,  1,  0,  1,  0,  1,  0}};
              */ {
-                {0, -1, 0, -1, 0, -1, 0, -1},
-                {-1, 0, 0, 0, 0, 0, 0, 0},
-                {0, -1, 0, -1, 0, -1, 0, -1},
+                {0,  0, 0, 0, 0, 0, 0, 0},
+                {-1, 0, -1, 0, -1, 0, 0, 0},
+                {0, 0, 0, -1, 0, -1, 0, -1},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, -1, 0, -1, 0, 0},
                 {1, 0, 0, 0, 0, 0, 0, 0},
@@ -92,7 +92,11 @@ public class Game {
                     if (piece == 0) { //Se o caminho estiver vazio
                         if (i == -1) {
                             newBoard = cloneBoard(this.board);
-                            newBoard[pos.x + i][pos.y + j] = 1;
+                            if (pos.x + i == 0) {
+                                newBoard[pos.x + i][pos.y + j] = 2;
+                            } else {
+                                newBoard[pos.x + i][pos.y + j] = 1;
+                            }
                             newBoard[pos.x][pos.y] = 0;
                             path.add(new Point(pos.x + i, pos.y + j));
                             moves.add(new Move(pos, 0, path, newBoard));
@@ -167,6 +171,7 @@ public class Game {
     }
 
     public void moveInitKingTaken(Point pos, int piecesTaken, int[][] board, List<Move> moves, List<Point> path) {
+        moves.add(new Move(pos, piecesTaken, new LinkedList<Point>(path), cloneBoard(board)));
         List<Point> newPath;
         Point posAux = new Point();
         int[][] newBoard;
@@ -202,7 +207,6 @@ public class Game {
                             newBoard[posAux.x - i][posAux.y - j] = 0;
                             newBoard[pos.x][pos.y] = 0;
                             newBoard[p.x][p.y] = 2;
-                            moves.add(new Move(posAux, piecesTaken, new LinkedList<Point>(newPath), newBoard));
                             moveInitKingTaken(p, piecesTaken + 1, newBoard, moves, newPath); //Verifica os caminhos
                         }
                     }
@@ -266,6 +270,10 @@ public class Game {
         int[][] newBoard1 = newBoard;
         int piece;
         for (int i = -1; i <= 1; i = i + 2) {
+            if (pos.x == 0) {
+                newBoard1[pos.x][pos.y] = 2;
+                break;
+            }
             for (int j = -1; j <= 1; j = j + 2) { //Percorre os vizinhos
                 piece = borderChecker(pos.x + i, pos.y + j, newBoard);
 

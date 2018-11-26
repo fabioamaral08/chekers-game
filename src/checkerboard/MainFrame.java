@@ -81,6 +81,7 @@ public class MainFrame extends JFrame {
     
     public void hostAction(){
         
+        
     }
     
     public void connectAction(){

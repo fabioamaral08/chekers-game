@@ -7,11 +7,13 @@ package game;
 
 import java.util.List;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *
  * @author gustavo
  */
+
 public class Move implements Comparable<Move> {
 
     /**
@@ -33,6 +35,7 @@ public class Move implements Comparable<Move> {
      * Board final
      */
     private int[][] board;
+
 
     /**
      * Construtor da classe

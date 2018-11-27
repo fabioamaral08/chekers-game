@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -25,6 +26,7 @@ public class MainFrame extends JFrame {
     private JTextArea logText;
     private JButton concede;
     private CBController cb;
+    private boolean isHost;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -40,10 +42,12 @@ public class MainFrame extends JFrame {
     }
 
     public MainFrame() {
+        this.setTitle("Damas");
+        isHost = false;
         setSize(new Dimension(850, 660));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         cb = new CBController();
 
         createMenu();
@@ -56,7 +60,7 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == host) {
-                    System.out.println("host");
+                    hostAction();
                 }
             }
         });
@@ -65,11 +69,11 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == connect) {
-                    System.out.println("conectar");
+                    connectAction();
                 }
             }
         });
-        
+
         concede.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -94,7 +98,7 @@ public class MainFrame extends JFrame {
         this.concede = new JButton("Desistir");
         this.concede.setSize(200, 49);
         this.concede.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 510);
-        
+
         add(concede);
 
     }
@@ -119,10 +123,32 @@ public class MainFrame extends JFrame {
     }
 
     public void hostAction() {
+        if (isHost) {
+            this.setTitle("Damas");
+            host.setText("Ser host");
+            connect.setText("Conectar");
+            cb.host();
+        } else {
+            this.setTitle("Buscando ...");
+            host.setText("Cancelar");
+            connect.setText("Informações");
+            isHost = true;
+            cb.cancelHost();
+        }
 
     }
 
     public void connectAction() {
+        if (isHost) {
+            String msg = "Seu IP é: " + cb.getIP() + "\n"
+                    + "E sua porta é : " + cb.getPorta();
+
+            JOptionPane.showMessageDialog(null, msg);
+        }else{
+            String ip = JOptionPane.showInputDialog("Digite o IP:");
+            int porta = Integer.parseInt(JOptionPane.showInputDialog("Digite a porta:"));
+            cb.connect(ip, porta);
+        }
 
     }
 

@@ -54,6 +54,7 @@ public class MainFrame extends JFrame {
         createTextArea();
         createButton();
         CheckerBoard checkerBoard = new CheckerBoard(8, 8, 3, cb);
+        cb.setCb(checkerBoard);
         getContentPane().add(checkerBoard, BorderLayout.CENTER);
 
         host.addActionListener(new ActionListener() {
@@ -127,13 +128,14 @@ public class MainFrame extends JFrame {
             this.setTitle("Damas");
             host.setText("Ser host");
             connect.setText("Conectar");
-            cb.host();
+            cb.cancelHost();
+            this.isHost = false;
         } else {
             this.setTitle("Buscando ...");
             host.setText("Cancelar");
             connect.setText("Informações");
             isHost = true;
-            cb.cancelHost();
+            cb.host();
         }
 
     }
@@ -141,7 +143,7 @@ public class MainFrame extends JFrame {
     public void connectAction() {
         if (isHost) {
             String msg = "Seu IP é: " + cb.getIP() + "\n"
-                    + "E sua porta é : " + cb.getPorta();
+                    + "E sua porta é : " + cb.getPort();
 
             JOptionPane.showMessageDialog(null, msg);
         }else{

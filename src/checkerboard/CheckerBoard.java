@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -57,7 +59,7 @@ public class CheckerBoard extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 Point pIni = p;
                 p = e.getPoint();
-                
+
                 if (!e.isPopupTrigger()) {
                     jPopupMenu.setVisible(false);
                 }
@@ -74,7 +76,7 @@ public class CheckerBoard extends JPanel {
                     p = null;
                 }
 
-              //  repaint();
+                //  repaint();
             }
 
         });
@@ -294,6 +296,26 @@ public class CheckerBoard extends JPanel {
     }
 
     /**
+     * Destaca a jogada do oponente
+     * @param m 
+     */
+    public void oponentPlays(Move m) {
+        CheckerHouse ch;
+        for (Point pos : m.getPath()) {
+            ch = getHouseAt(pos.x, pos.y);
+            ch.setSelectionMode(CheckerHouse.SELECTION_MODE_SELECTED);
+        }
+        try {
+            wait(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CheckerBoard.class.getName()).log(Level.SEVERE, null, ex);
+        } {
+       
+    }
+        setSelectionModeNone();
+    }
+
+    /**
      * Função que cria as peças e desenha o tabuleiro
      *
      * @param rows Numero de linhas do tabuleiro
@@ -356,7 +378,6 @@ public class CheckerBoard extends JPanel {
 
         }
     }
-
 
     /**
      * Função que retorna a casa na posição row, col

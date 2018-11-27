@@ -8,9 +8,13 @@ import javax.swing.JFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class MainFrame extends JFrame {
 
@@ -18,6 +22,9 @@ public class MainFrame extends JFrame {
     private JMenu menu;
     private JMenuItem host;
     private JMenuItem connect;
+    private JTextArea logText;
+    private JButton concede;
+    private CBController cb;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -33,14 +40,18 @@ public class MainFrame extends JFrame {
     }
 
     public MainFrame() {
-        setSize(new Dimension(640, 640));
+        setSize(new Dimension(850, 660));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        cb = new CBController();
 
-        CheckerBoard checkerBoard = new CheckerBoard(8, 8, 3);
-        getContentPane().add(checkerBoard, BorderLayout.CENTER);
         createMenu();
-        this.setJMenuBar(menuBar);
+        createTextArea();
+        createButton();
+        CheckerBoard checkerBoard = new CheckerBoard(8, 8, 3, cb);
+        getContentPane().add(checkerBoard, BorderLayout.CENTER);
+
         host.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,6 +69,34 @@ public class MainFrame extends JFrame {
                 }
             }
         });
+        
+        concede.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Manda pro controlador resolver
+            }
+        });
+    }
+
+    public void createTextArea() {
+        this.logText = new JTextArea();
+        this.logText.setEditable(false);
+        JScrollPane scroll = new JScrollPane(logText);
+        scroll.setBorder(BorderFactory.createTitledBorder("Histórico de Jogadas"));
+        scroll.setSize(200, 500);
+        scroll.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 10);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        add(scroll);
+    }
+
+    private void createButton() {
+        this.concede = new JButton("Desistir");
+        this.concede.setSize(200, 49);
+        this.concede.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 510);
+        
+        add(concede);
+
     }
 
     public void createMenu() {
@@ -75,17 +114,16 @@ public class MainFrame extends JFrame {
         menu.add(host);
         menu.add(connect);
         this.menuBar.add(menu);
-        this.menuBar.setVisible(true);
+        this.setJMenuBar(menuBar);
 
     }
-    
-    public void hostAction(){
-        
-        
+
+    public void hostAction() {
+
     }
-    
-    public void connectAction(){
-        
+
+    public void connectAction() {
+
     }
 
 }

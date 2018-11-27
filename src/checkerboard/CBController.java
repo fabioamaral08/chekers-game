@@ -22,12 +22,12 @@ public class CBController {
         this.g = new Game();
     }
 
-    public void movePiece(int[][] board) {
-      this.g.setBoard(board);
+    public void movePiece(Move m) {
+      this.g.setBoard(m.getBoard());
     }
 
-    public List possiblesPlays(Point pos, int houseSide) {
-        Point p = new Point(pos.y / houseSide, pos.x / houseSide);
+    public List possiblesPlays(int row, int col) {
+        Point p = new Point(row, col);
         return this.g.moveInit(p);
     }
 

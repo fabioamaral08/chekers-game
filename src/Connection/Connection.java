@@ -6,6 +6,7 @@
 package Connection;
 
 import checkerboard.CBController;
+import game.Move;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +27,7 @@ public class Connection implements Runnable {
     private InetAddress ip;
     private int port;
     public CBController controller;
+    private boolean myTurn;
 
     public Connection() {
         try {
@@ -38,11 +40,17 @@ public class Connection implements Runnable {
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        while(true){
+            if(!myTurn){
+                recieveBoard();
+                myTurn = true;
+            }
+        }
     }
 
-    private void initCon() {
+    public void initCon() {
         try {
+            this.myTurn = true;
             this.ip = this.servSoc.getInetAddress();
             this.soc = this.servSoc.accept();
         } catch (IOException ex) {
@@ -54,10 +62,11 @@ public class Connection implements Runnable {
      *
      * @param board
      */
-    private void sendBord(int[][] board) {
+    public void sendBord(int[][] board) {
         try {
             ObjectOutputStream out = new ObjectOutputStream(this.soc.getOutputStream());
             out.writeObject(board);
+            this.myTurn = false;
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -77,6 +86,7 @@ public class Connection implements Runnable {
 
     private void connect() {
         try {
+            this.myTurn = false;
             this.soc = new Socket(ip, port);
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,6 +100,12 @@ public class Connection implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void host(){
+        Host h = new Host(this);
+        Thread t = new Thread(h);
+        t.start();
     }
     
 }

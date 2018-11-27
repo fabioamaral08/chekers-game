@@ -6,6 +6,7 @@
 package Connection;
 
 import checkerboard.CBController;
+import game.Move;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,29 +23,59 @@ import java.util.logging.Logger;
 public class Connection implements Runnable {
 
     private Socket soc;
+    private Thread hostThread;
     private ServerSocket servSoc;
     private InetAddress ip;
     private int port;
     public CBController controller;
+    private boolean myTurn;
 
-    public Connection() {
+    public Connection(CBController controller) {
         try {
-            this.controller = new CBController();
-            this.servSoc = new ServerSocket();
+            this.controller = controller;
+            this.servSoc = new ServerSocket(5000);
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    @Override
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public InetAddress getIp() {
+        return ip;
     }
 
-    private void initCon() {
+    public int getPort() {
+        return port;
+    }
+
+    public void setIp(InetAddress ip) {
+        this.ip = ip;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public boolean isMyTurn() {
+        return myTurn;
+    }
+    
+    @Override
+    public void run() {
+        while(true){
+            if(!myTurn){
+                recieveBoard();
+                myTurn = true;
+            }
+        }
+    }
+
+    public void initCon() {
         try {
-            this.ip = this.servSoc.getInetAddress();
+            this.myTurn = true;
+            this.ip = InetAddress.getLocalHost();
+            this.port = this.servSoc.getLocalPort();
             this.soc = this.servSoc.accept();
+            this.controller.playerFound();
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -54,10 +85,11 @@ public class Connection implements Runnable {
      *
      * @param board
      */
-    private void sendBord(int[][] board) {
+    public void sendBord(Move move) {
         try {
             ObjectOutputStream out = new ObjectOutputStream(this.soc.getOutputStream());
-            out.writeObject(board);
+            out.writeObject(move);
+            this.myTurn = false;
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,8 +98,8 @@ public class Connection implements Runnable {
     private void recieveBoard() {
         try {
             ObjectInputStream in = new ObjectInputStream(this.soc.getInputStream());
-            int[][] board = (int[][]) in.readObject();
-            this.controller.setBoard(board);
+            Move move = (Move) in.readObject();
+            this.controller.setMove(move);
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -75,9 +107,11 @@ public class Connection implements Runnable {
         }
     }
 
-    private void connect() {
+    public void connect() {
         try {
+            this.myTurn = false;
             this.soc = new Socket(ip, port);
+            this.controller.playerFound();
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -91,5 +125,17 @@ public class Connection implements Runnable {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void host(){
+        Host h = new Host(this);
+        this.hostThread = new Thread(h);
+        this.hostThread.start();
+    }
+
+    public void cancelHost() {
+        this.hostThread.interrupt();
+    }
+    
+   
     
 }

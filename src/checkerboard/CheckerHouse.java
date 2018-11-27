@@ -1,5 +1,6 @@
 package checkerboard;
 
+import game.Move;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -58,8 +59,7 @@ public class CheckerHouse extends JPanel {
     public static final int SELECTION_MODE_MOVE = 2;
 
     private float margin;
-    private List<Point> paths;
-    private List<int[][]> board;
+    private List<Move> moves;
 
     private Color bgColor;
     private Color fgColor;
@@ -93,8 +93,8 @@ public class CheckerHouse extends JPanel {
         contentType = CheckerHouse.CONTENT_TYPE_EMPTY;
         selectionMode = CheckerHouse.SELECTION_MODE_NONE;
 
-        board = new LinkedList();
-        paths = new LinkedList();
+       
+        moves = new LinkedList();
 
         pathColor = new LinkedList();
         bgColor = Color.WHITE;
@@ -348,20 +348,12 @@ public class CheckerHouse extends JPanel {
         this.col = col;
     }
 
-    public List<Point> getPaths() {
-        return paths;
+    public List<Move> getMoves() {
+        return moves;
     }
 
-    public void setPaths(List<Point> paths) {
-        this.paths = paths;
-    }
-
-    public List<int[][]> getBoard() {
-        return board;
-    }
-
-    public void setBoard(List<int[][]> board) {
-        this.board = board;
+    public void setMoves(List<Move> moves) {
+        this.moves = moves;
     }
 
     @Override

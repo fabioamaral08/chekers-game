@@ -11,17 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
 
 public class CheckerBoard extends JPanel {
 
-    private int houseSide;
+    public static final int HOUSE_SIDE = 70;
     private int rows;
     private int cols;
     private Map<Integer, CheckerHouse> houses;
@@ -34,16 +34,14 @@ public class CheckerBoard extends JPanel {
     private CBController cb;
     private CheckerHouse selectedHouse;
     private JPopupMenu jPopupMenu;
-    private JMenuBar menuBar;
 
-    public CheckerBoard(int rows, int cols, int rowsPieces) {
+    public CheckerBoard(int rows, int cols, int rowsPieces, CBController cb) {
+        this.cb = cb;
         this.rows = rows;
         this.cols = cols;
 
-        houseSide = 70;
         houses = new HashMap<>();
-
-        cb = new CBController();
+        jPopupMenu = new JPopupMenu();
 
         blackHouseColor = Color.BLACK;
         playerColor = Color.RED.darker();
@@ -59,8 +57,12 @@ public class CheckerBoard extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 Point pIni = p;
                 p = e.getPoint();
+                
+                if (!e.isPopupTrigger()) {
+                    jPopupMenu.setVisible(false);
+                }
 
-                if (!(p.x >= houseSide * cols || p.y >= houseSide * rows)) {
+                if (!(p.x >= HOUSE_SIDE * cols || p.y >= HOUSE_SIDE * rows)) {
                     if (pIni != null && p != null) {
                         movePiece(pIni, p);
                         pIni = null;
@@ -68,9 +70,11 @@ public class CheckerBoard extends JPanel {
                         houseSelected(p);
                     }
 
+                } else {
+                    p = null;
                 }
 
-                repaint();
+              //  repaint();
             }
 
         });
@@ -81,24 +85,23 @@ public class CheckerBoard extends JPanel {
      *
      * @param pos Posição da casa selecionada
      */
-    public void possiblePlays(Point pos) {
-        CheckerHouse ch;
-        ch = getHouseAt(pos.y / houseSide, pos.x / houseSide);
+    public void possiblePlays(CheckerHouse ch) {
         if (ch.getContentType() == CheckerHouse.CONTENT_TYPE_KING) {
-            possibleKingPlays(pos);
+            possibleKingPlays(ch);
             return;
         }
-        List<Move> moves = this.cb.possiblesPlays(pos, houseSide);
+        List<Move> moves = this.cb.possiblesPlays(ch.getRow(), ch.getCol());
         ArrayList<Color> colors = getColors();
 
-        for (int i = 0; i < moves.size(); i++) {
-            for (Point p : moves.get(i).getPath()) {
+        for (int i = 0; i < moves.size(); i++) {//Percorre todas as possíveis jogadas
+            for (Point p : moves.get(i).getPath()) {//Percorre o caminho de cada jogada
                 ch = getHouseAt(p.x, p.y);
                 ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
-                if (!ch.getPathColor().contains(colors.get(i))) {
+                if (!ch.getPathColor().contains(colors.get(i))) {//Verifica se já passou pelo caminho
                     ch.getPathColor().add(colors.get(i));
+                    ch.getMoves().add(moves.get(i));
                 }
-                ch.getBoard().add(moves.get(i).getBoard());
+                //ch.getMoves().add(moves.get(i));
             }
         }
 
@@ -131,8 +134,8 @@ public class CheckerBoard extends JPanel {
      * @param b Point com a posição final da peça que se deseja mover
      */
     public void movePiece(Point a, Point b) {
-        CheckerHouse chB = getHouseAt(b.y / houseSide, b.x / houseSide);
-        CheckerHouse chA = getHouseAt(a.y / houseSide, a.x / houseSide);
+        CheckerHouse chB = getHouseAt(b.y / HOUSE_SIDE, b.x / HOUSE_SIDE);
+        CheckerHouse chA = getHouseAt(a.y / HOUSE_SIDE, a.x / HOUSE_SIDE);
 
         if (chA.getContentType() == CheckerHouse.CONTENT_TYPE_EMPTY || chA == chB) {
             houseSelected(b);
@@ -144,19 +147,20 @@ public class CheckerBoard extends JPanel {
 
             chA.setSelectionMode(CheckerHouse.SELECTION_MODE_NONE);
             chA.setFgColor(c);
-            List<int[][]> moves = chB.getBoard();
+            List<Move> moves = chB.getMoves();
             if (moves.size() == 1 || chB.getPathColor().size() == 1) {
-                int[][] gameBoard = moves.get(0);
-                this.cb.movePiece(gameBoard);
+                this.cb.movePiece(moves.get(0));
+                repaintBoard(moves.get(0));
                 setSelectionModeNone();
-                repaintBoard(gameBoard);
             } else {
                 jPopupMenu = new JPopupMenu();
 
                 int i = 0;
+                int last;
 
-                for (Color color : chB.getPathColor()) {
-                    createPopupMenuItem(moves.get(i), color, i, chB.getPaths().get(i));
+                for (Move m : chB.getMoves()) {
+                    last = m.getPath().size() - 1;
+                    createPopupMenuItem(m, chB.getPathColor().get(i), i, last);
                     i++;
 
                 }
@@ -181,19 +185,20 @@ public class CheckerBoard extends JPanel {
      * @param color Cor do caminho
      * @param i Numero do caminho
      */
-    public void createPopupMenuItem(int[][] moves, Color color, int i, Point p) {
+    public void createPopupMenuItem(Move m, Color color, int i, int last) {
+        Point p = m.getPath().get(last);
         JMenuItem jMenuItem = new JMenuItem();
         jMenuItem.setName("Caminho_" + i);
-        jMenuItem.setText("Caminho " + i + " (" + p.x + "," + p.y + ")");
+        jMenuItem.setText("Caminho " + Integer.toString(i + 1) + " ("
+                + Integer.toString(p.x + 1) + "," + Integer.toString(p.y + 1) + ")");
         jMenuItem.setBorder(BorderFactory.createLineBorder(color, 3));
         jPopupMenu.add(jMenuItem);
         jMenuItem.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int[][] gameBoard;
-                cb.movePiece(moves);
+                cb.movePiece(m);
+                repaintBoard(m);
                 setSelectionModeNone();
-                repaintBoard(moves);
                 jPopupMenu.setVisible(false);
             }
 
@@ -221,8 +226,8 @@ public class CheckerBoard extends JPanel {
      * @param gameBoard - Matriz de inteiros que contém o tabuleiro com a nova
      * disposição das peças
      */
-    public void repaintBoard(int[][] gameBoard) {
-
+    public void repaintBoard(Move m) {
+        int[][] gameBoard = m.getBoard();
         CheckerHouse ch;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -252,7 +257,7 @@ public class CheckerBoard extends JPanel {
             }
         }
 
-        repaint();
+        //repaint();
     }
 
     /**
@@ -261,18 +266,18 @@ public class CheckerBoard extends JPanel {
      * @param p Point com a posição do mouse
      */
     public void houseSelected(Point p) {
-        int row = p.y / houseSide;
-        int col = p.x / houseSide;
+        int row = p.y / HOUSE_SIDE;
+        int col = p.x / HOUSE_SIDE;
 
         CheckerHouse che = getHouseAt(row, col);
 
         if (che.getSelectionMode() == CheckerHouse.SELECTION_MODE_SELECTED) {
             setSelectionModeNone();
-            p = null;
+            this.p = null;
         } else {
             setSelectionModeNone();
             che.setSelectionMode(CheckerHouse.SELECTION_MODE_SELECTED);
-            possiblePlays(p);
+            possiblePlays(che);
 
         }
     }
@@ -283,7 +288,7 @@ public class CheckerBoard extends JPanel {
     public void setSelectionModeNone() {
         for (CheckerHouse ch : this.houses.values()) {
             ch.setSelectionMode(CheckerHouse.SELECTION_MODE_NONE);
-            ch.getBoard().clear();
+            ch.getMoves().clear();
             ch.getPathColor().clear();
         }
     }
@@ -320,23 +325,38 @@ public class CheckerBoard extends JPanel {
                     house.setBgColor(whiteHouseColor);
                 }
 
-                house.setBounds(c * houseSide, (rows - r - 1) * houseSide, houseSide, houseSide);
+                house.setBounds(c * HOUSE_SIDE, (rows - r - 1) * HOUSE_SIDE, HOUSE_SIDE, HOUSE_SIDE);
 
                 houses.put((rows - r - 1) * cols + c, house);
                 // System.out.println((rows - r - 1) * cols + c);
                 add(house);
             }
         }
-
+        setLabels();
     }
 
-    public int getHouseSide() {
-        return houseSide;
+    public void setLabels() {
+        for (int i = 0; i < 8; i++) {
+            JLabel jl = new JLabel(Integer.toString(i + 1), JLabel.CENTER);
+            jl.setOpaque(true);
+            jl.setBackground(new Color(245, 245, 245));
+            jl.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+            jl.setSize(HOUSE_SIDE / 2, HOUSE_SIDE);
+            jl.setLocation(8 * HOUSE_SIDE, i * HOUSE_SIDE);
+            add(jl);
+
+            JLabel jc = new JLabel(Integer.toString(i + 1), JLabel.CENTER);
+            jc.setOpaque(true);
+            jc.setBackground(new Color(245, 245, 245));
+            jc.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+            jc.setSize(HOUSE_SIDE, HOUSE_SIDE / 2);
+            jc.setHorizontalTextPosition(SwingConstants.CENTER);
+            jc.setLocation(i * HOUSE_SIDE, 8 * HOUSE_SIDE);
+            add(jc);
+
+        }
     }
 
-    public void setHouseSide(int houseSide) {
-        this.houseSide = houseSide;
-    }
 
     /**
      * Função que retorna a casa na posição row, col
@@ -401,37 +421,33 @@ public class CheckerBoard extends JPanel {
         this.oponentColor = oponentColor;
     }
 
-    private void possibleKingPlays(Point pos) {
-        int last;
-        CheckerHouse ch = null;
-        List<Move> moves = this.cb.possiblesPlays(pos, houseSide);
+    private void possibleKingPlays(CheckerHouse ch) {
+        int i = 0;
+        List<Move> moves = this.cb.possiblesPlays(ch.getRow(), ch.getCol());
         ArrayList<Color> colors = getColors();
 
-        for (int i = 0; i < moves.size(); i++) {
-            last = moves.get(i).getPath().size() - 1;
-            if (moves.get(i).getPiecesTaken() == 0) {
-                Point p = moves.get(i).getPath().get(moves.get(i).getPath().size() - 1);
+        for (Move m : moves) {//Percorre as possíveis jogadas
+            if (m.getPiecesTaken() == 0) {//Se não toma nenhuma peça
+                Point p = m.getPath().get(m.getPath().size() - 1); //Pega o último caminho
                 ch = getHouseAt(p.x, p.y);
                 ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
-                if (!ch.getPathColor().contains(colors.get(0))) {
-                    ch.getPathColor().add(colors.get(0));
-                    ch.getPaths().add(moves.get(i).getPath().get(last));
+                if (!ch.getPathColor().contains(colors.get(0))) {//Verifica se já passou por aquele caminho
+                    ch.getPathColor().add(colors.get(0));//Adiciona caminho
+                    ch.getMoves().add(m);
                 }
-                ch.getBoard().add(moves.get(i).getBoard());
             } else {
-                for (Point p : moves.get(i).getPath()) {
+                for (Point p : m.getPath()) { //Se toma peças percorre os caminhos
                     ch = getHouseAt(p.x, p.y);
                     ch.setSelectionMode(CheckerHouse.SELECTION_MODE_MOVE);
                     if (!ch.getPathColor().contains(colors.get(i))) {
                         ch.getPathColor().add(colors.get(i));
-                        ch.getPaths().add(moves.get(i).getPath().get(last));
-                        ch.getBoard().add(moves.get(i).getBoard());
-                    }
+                        ch.getMoves().add(m);
+                    }//if caminhos repetidos
+                }//for caminhos
+            }//else toma peças
+            i++;
 
-                }
-            }
-
-        }
+        }//for jogadas
     }
 
 }

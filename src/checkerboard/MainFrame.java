@@ -3,6 +3,7 @@ package checkerboard;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 
 import javax.swing.JFrame;
 
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -28,6 +30,7 @@ public class MainFrame extends JFrame {
     private CBController cb;
     private boolean isHost;
     private CheckerBoard checkerBoard;
+    private JLabel turn;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -48,12 +51,14 @@ public class MainFrame extends JFrame {
         setSize(new Dimension(850, 660));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
 
         cb = new CBController();
 
         createMenu();
         createTextArea();
         createButton();
+        createLabel();
         checkerBoard = new CheckerBoard(8, 8, 3, cb);
         cb.setMF(this);
         getContentPane().add(checkerBoard, BorderLayout.CENTER);
@@ -84,15 +89,15 @@ public class MainFrame extends JFrame {
         });
     }
 
-    
     public void createTextArea() {
         this.logText = new JTextArea();
         this.logText.setEditable(false);
         this.logText.setLineWrap(true);
+        this.logText.setFont(new Font("Dialog", Font.BOLD, 14));
         JScrollPane scroll = new JScrollPane(logText);
         scroll.setBorder(BorderFactory.createTitledBorder("Histórico de Jogadas"));
-        scroll.setSize(200, 500);
-        scroll.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 10);
+        scroll.setSize(200, 7 * CheckerBoard.HOUSE_SIDE);
+        scroll.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, CheckerBoard.HOUSE_SIDE / 2);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         add(scroll);
@@ -100,11 +105,21 @@ public class MainFrame extends JFrame {
 
     private void createButton() {
         this.concede = new JButton("Desistir");
-        this.concede.setSize(200, 49);
-        this.concede.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 510);
+        this.concede.setSize(200, CheckerBoard.HOUSE_SIDE / 2);
+        this.concede.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 7 * CheckerBoard.HOUSE_SIDE + CheckerBoard.HOUSE_SIDE / 2);
+        this.concede.setFont(new Font("Dialog", Font.BOLD, 15));
 
         add(concede);
 
+    }
+
+    private void createLabel() {
+        this.turn = new JLabel("Turno", JLabel.CENTER);
+        this.turn.setSize(200, CheckerBoard.HOUSE_SIDE / 2);
+        this.turn.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 0);
+        this.turn.setFont(new Font("Dialog", Font.BOLD, 16));
+
+        add(this.turn);
     }
 
     public void createMenu() {
@@ -149,15 +164,23 @@ public class MainFrame extends JFrame {
                     + "E sua porta é : " + cb.getPort();
 
             JOptionPane.showMessageDialog(null, msg);
-        }else{
+        } else {
             String ip = JOptionPane.showInputDialog("Digite o IP:");
-            int porta = Integer.parseInt(JOptionPane.showInputDialog("Digite a porta:"));
-            cb.connect(ip, porta);
+            if (ip == null) {
+                return;
+            }
+            cb.connect(ip, 5000);
         }
 
     }
+
+    public void setTurn(String str) {
+        this.turn.setText(str);
+    }
     
-    public void setLogText(String text){
+    
+
+    public void setLogText(String text) {
         String str = this.logText.getText();
         this.logText.setText(str + text);
     }
@@ -165,7 +188,5 @@ public class MainFrame extends JFrame {
     public CheckerBoard getCheckerBoard() {
         return checkerBoard;
     }
-    
-    
 
 }

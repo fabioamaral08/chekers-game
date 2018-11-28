@@ -130,7 +130,6 @@ public class CheckerHouse extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                getParent().dispatchEvent(e);
             }
 
             @Override
@@ -139,11 +138,13 @@ public class CheckerHouse extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                getParent().dispatchEvent(e);
+
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                
+
                 if (bgColor.equals(Color.GREEN.brighter())) {
                     bgColor = Color.WHITE;
                 } else if (bgColor.equals(Color.GREEN.darker())) {
@@ -153,7 +154,6 @@ public class CheckerHouse extends JPanel {
             }
         });
 
-        
     }
 
     @Override

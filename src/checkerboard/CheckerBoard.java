@@ -1,3 +1,7 @@
+/**
+ * Guarda os dados do tabuleiro
+ */
+
 package checkerboard;
 
 import game.Move;
@@ -23,27 +27,61 @@ import javax.swing.SwingConstants;
 
 public class CheckerBoard extends JPanel {
 
+    /**
+     * Constante do tamanho do lado de cada casa
+     */
     public static final int HOUSE_SIDE = 70;
+    
+    /**
+     * Número de linhase colunas do tabuleiro
+     */
     private int rows;
     private int cols;
+    
+    /**
+     * Tabela das casas
+     */
     private Map<Integer, CheckerHouse> houses;
+    
+    /**
+     * Cores das casas do tabuleiro
+     */
     private Color blackHouseColor;
     private Color whiteHouseColor;
     private Color playerColor;
     private Color oponentColor;
     private Color selectionColor;
+    
+    /**
+     * Localização do click do mouse
+     */
     private Point p;
+    
+    /**
+     * Objeto da classe CBController
+     */
     private CBController cb;
-    private CheckerHouse selectedHouse;
-    private JPopupMenu jPopupMenu;
+    
+    /**
+     * Menu popup para escolha de caminhos
+     */
+    private JPopupMenu pathChooser;
 
+    /**
+     * Construtor da classe - cria um mouse listener para captura da posição do click
+     * 
+     * @param rows int número de linhas
+     * @param cols int número de colunas
+     * @param rowsPieces int quantidade de linhas que serão preenchidas
+     * @param cb CBController
+     */
     public CheckerBoard(int rows, int cols, int rowsPieces, CBController cb) {
         this.cb = cb;
         this.rows = rows;
         this.cols = cols;
 
         houses = new HashMap<>();
-        jPopupMenu = new JPopupMenu();
+        pathChooser = new JPopupMenu();
 
         blackHouseColor = Color.BLACK;
         playerColor = Color.RED.darker();
@@ -61,7 +99,7 @@ public class CheckerBoard extends JPanel {
                 p = getMousePosition();
 
                 if (!e.isPopupTrigger()) {
-                    jPopupMenu.setVisible(false);
+                    pathChooser.setVisible(false);
                 }
 
                 if (!(p.x >= HOUSE_SIDE * cols || p.y >= HOUSE_SIDE * rows)) {
@@ -87,7 +125,7 @@ public class CheckerBoard extends JPanel {
     /**
      * Função que seta as possíveis jogadas da casa selecionada
      *
-     * @param pos Posição da casa selecionada
+     * @param ch CheckerHouse casa selecionada
      */
     public void possiblePlays(CheckerHouse ch) {
         if (ch.getContentType() == CheckerHouse.CONTENT_TYPE_KING) {
@@ -162,7 +200,7 @@ public class CheckerBoard extends JPanel {
                 repaintBoard(moves.get(0));
                 setSelectionModeNone();
             } else {
-                jPopupMenu = new JPopupMenu();
+                pathChooser = new JPopupMenu();
 
                 int i = 0;
                 int last;
@@ -173,8 +211,8 @@ public class CheckerBoard extends JPanel {
                     i++;
 
                 }
-                jPopupMenu.show(this, p.x, p.y);
-                jPopupMenu.setInvoker(null);
+                pathChooser.show(this, p.x, p.y);
+                pathChooser.setInvoker(null);
 
             }
 
@@ -188,11 +226,11 @@ public class CheckerBoard extends JPanel {
 
     /**
      * Cria um item do PopupMenu e adiciona um evento MouseListener a este.
-     *
-     * @param moves Matriz de inteiros com as posições das peças relativas ao
-     * caminho escolhido
-     * @param color Cor do caminho
-     * @param i Numero do caminho
+     * 
+     * @param m Move
+     * @param color Color Cor do caminho
+     * @param i int Numero do caminho
+     * @param last int última caminho
      */
     public void createPopupMenuItem(Move m, Color color, int i, int last) {
         Point p = m.getPath().get(last);
@@ -201,14 +239,14 @@ public class CheckerBoard extends JPanel {
         jMenuItem.setText("Caminho " + Integer.toString(i + 1) + " ("
                 + Integer.toString(p.x + 1) + "," + changeNumber(p.y) + ")");
         jMenuItem.setBorder(BorderFactory.createLineBorder(color, 3));
-        jPopupMenu.add(jMenuItem);
+        pathChooser.add(jMenuItem);
         jMenuItem.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 cb.movePiece(m);
                 repaintBoard(m);
                 setSelectionModeNone();
-                jPopupMenu.setVisible(false);
+                pathChooser.setVisible(false);
             }
 
             @Override
@@ -232,8 +270,7 @@ public class CheckerBoard extends JPanel {
     /**
      * Função que redesenha o tabuleiro a cada jogada
      *
-     * @param gameBoard - Matriz de inteiros que contém o tabuleiro com a nova
-     * disposição das peças
+     * @param m Move
      */
     public void repaintBoard(Move m) {
         int[][] gameBoard = m.getBoard();
@@ -305,7 +342,7 @@ public class CheckerBoard extends JPanel {
     /**
      * Destaca a jogada do oponente
      *
-     * @param m
+     * @param m Move
      */
     public synchronized void opponentPlays(Move m) {
         PrintOpponent po = new PrintOpponent(m);
@@ -315,9 +352,9 @@ public class CheckerBoard extends JPanel {
     /**
      * Função que cria as peças e desenha o tabuleiro
      *
-     * @param rows Numero de linhas do tabuleiro
-     * @param cols Numero de colunas do tabuleiro
-     * @param rowsPieces Numero de linhas que serão preenchiadas com peças
+     * @param rows int linhas do tabuleiro
+     * @param cols int colunas do tabuleiro
+     * @param rowsPieces int linhas que serão preenchiadas com peças
      */
     public void rebuild(int rows, int cols, int rowsPieces) {
         removeAll();
@@ -353,6 +390,9 @@ public class CheckerBoard extends JPanel {
         setLabels();
     }
 
+    /**
+     * Cria a numerção em torno do tabuleiro
+     */
     public void setLabels() {
         for (int i = 0; i < 8; i++) {
             JLabel jl = new JLabel(Integer.toString(i + 1), JLabel.CENTER);
@@ -438,6 +478,11 @@ public class CheckerBoard extends JPanel {
         this.oponentColor = oponentColor;
     }
 
+    /**
+     * Trata as possíveis jogadas da dama
+     * 
+     * @param ch CheckerHouse
+     */
     private void possibleKingPlays(CheckerHouse ch) {
         int i = 0;
         List<Move> moves = this.cb.possiblesPlays(ch.getRow(), ch.getCol());
@@ -498,14 +543,30 @@ public class CheckerBoard extends JPanel {
        return str;
     }
 
+    /**
+     * Classe auxiliar para detacar as jogadas do oponente após o recebimento do
+     * novo tabuleiro
+     */
     class PrintOpponent extends Thread {
 
+        /**
+         * Movimento feito
+         */
         private Move m;
 
+        /**
+         * Contrutor da classe
+         * 
+         * @param m Move 
+         */
         public PrintOpponent(Move m) {
             this.m = m;
         }
 
+        /**
+         * Método run da thread para que tenha um delay na jogada, facilitando
+         * a visualização
+         */
         @Override
         public void run() {
             CheckerHouse ch;

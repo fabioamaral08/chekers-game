@@ -58,7 +58,7 @@ public class CheckerBoard extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point pIni = p;
-                p = e.getPoint();
+                p = getMousePosition();
 
                 if (!e.isPopupTrigger()) {
                     jPopupMenu.setVisible(false);

@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
@@ -53,7 +54,7 @@ public class CheckerHouse extends JPanel {
      * Especifica que a casa está selecionada.
      */
     public static final int SELECTION_MODE_SELECTED = 1;
-    
+
     public static final int SELECTION_MODE_HOVER = 3;
     /**
      * Especifica que a casa é um posição destino. A casa pode ser alcançada
@@ -110,6 +111,49 @@ public class CheckerHouse extends JPanel {
 
         setLayout(null);
 
+        addMouseListener(new MouseListener() {
+            private Color background;
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+                if (selectionMode != CheckerHouse.SELECTION_MODE_NONE) {
+                    return;
+                }
+                if (bgColor.equals(Color.WHITE)) {
+                    bgColor = Color.GREEN.brighter();
+                } else if (bgColor.equals(Color.BLACK)) {
+                    bgColor = Color.GREEN.darker();
+                }
+                repaint();
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                getParent().dispatchEvent(e);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                
+                if (bgColor.equals(Color.GREEN.brighter())) {
+                    bgColor = Color.WHITE;
+                } else if (bgColor.equals(Color.GREEN.darker())) {
+                    bgColor = Color.BLACK;
+                }
+                repaint();
+            }
+        });
+
+        
     }
 
     @Override
@@ -124,7 +168,7 @@ public class CheckerHouse extends JPanel {
             g2D.setColor(selectionColor);
             drawSelectionRect(g2D, 0);
         }
-        
+
         if (selectionMode == CheckerHouse.SELECTION_MODE_HOVER) {
             g2D.setColor(selectionColor);
             drawSelectionRect(g2D, 0);

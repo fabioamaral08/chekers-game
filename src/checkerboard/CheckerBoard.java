@@ -56,7 +56,7 @@ public class CheckerBoard extends JPanel {
             private Color background;
 
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
                 Point pIni = p;
                 p = getMousePosition();
 
@@ -81,6 +81,8 @@ public class CheckerBoard extends JPanel {
 
         });
     }
+    
+    
 
     /**
      * Função que seta as possíveis jogadas da casa selecionada
@@ -197,7 +199,7 @@ public class CheckerBoard extends JPanel {
         JMenuItem jMenuItem = new JMenuItem();
         jMenuItem.setName("Caminho_" + i);
         jMenuItem.setText("Caminho " + Integer.toString(i + 1) + " ("
-                + Integer.toString(p.x + 1) + "," + Integer.toString(p.y + 1) + ")");
+                + Integer.toString(p.x + 1) + "," + changeNumber(p.y) + ")");
         jMenuItem.setBorder(BorderFactory.createLineBorder(color, 3));
         jPopupMenu.add(jMenuItem);
         jMenuItem.addMouseListener(new MouseListener() {
@@ -361,7 +363,7 @@ public class CheckerBoard extends JPanel {
             jl.setLocation(8 * HOUSE_SIDE, i * HOUSE_SIDE);
             add(jl);
 
-            JLabel jc = new JLabel(Integer.toString(i + 1), JLabel.CENTER);
+            JLabel jc = new JLabel(changeNumber(i), JLabel.CENTER);
             jc.setOpaque(true);
             jc.setBackground(new Color(245, 245, 245));
             jc.setBorder(BorderFactory.createRaisedSoftBevelBorder());
@@ -463,6 +465,37 @@ public class CheckerBoard extends JPanel {
             i++;
 
         }//for jogadas
+    }
+    
+    public String changeNumber (int i){
+        String str = "";
+       switch(i){
+           case 0:
+               str = "A";
+               break;
+           case 1:
+               str = "B";
+               break;
+           case 2:
+               str = "C";
+               break;
+           case 3:
+               str = "D";
+               break;
+           case 4:
+               str = "E";
+               break;
+           case 5:
+               str = "F";
+               break;
+           case 6:
+               str = "G";
+               break;
+           case 7:
+               str = "H";
+               break;
+       }
+       return str;
     }
 
     class PrintOpponent extends Thread {

@@ -47,7 +47,6 @@ public class CBController {
             this.g.setBoard(move.getBoard());
             if (move.getPath() == null) {
                 str = "Sua jogada: PERDEU A VEZ!\n\n";
-                this.mf.setLogText(str);
             } else {
                 str = "Sua jogada:\n" + "Caminho: " + getPath(move) + "\n"
                         + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";

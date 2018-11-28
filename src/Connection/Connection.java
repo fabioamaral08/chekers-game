@@ -31,12 +31,7 @@ public class Connection implements Runnable {
     private boolean myTurn;
 
     public Connection(CBController controller) {
-        try {
-            this.controller = controller;
-            this.servSoc = new ServerSocket(5000);
-        } catch (IOException ex) {
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.controller = controller;
     }
 
     public InetAddress getIp() {
@@ -58,13 +53,13 @@ public class Connection implements Runnable {
     public boolean isMyTurn() {
         return myTurn;
     }
-    
+
     @Override
     public void run() {
-        while(true){
-                recieveBoard();
-                myTurn = true;
-            
+        while (true) {
+            recieveBoard();
+            myTurn = true;
+
         }
     }
 
@@ -72,6 +67,7 @@ public class Connection implements Runnable {
         try {
             this.myTurn = true;
             this.ip = InetAddress.getLocalHost();
+            this.servSoc = new ServerSocket(5000);
             this.port = this.servSoc.getLocalPort();
             this.soc = this.servSoc.accept();
             this.controller.playerFound();
@@ -116,7 +112,7 @@ public class Connection implements Runnable {
         }
     }
 
-    private void disconnect() {
+    public void disconnect() {
         try {
             this.soc.close();
             this.servSoc.close();
@@ -124,8 +120,8 @@ public class Connection implements Runnable {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void host(){
+
+    public void host() {
         Host h = new Host(this);
         this.hostThread = new Thread(h);
         this.hostThread.start();
@@ -134,7 +130,5 @@ public class Connection implements Runnable {
     public void cancelHost() {
         this.hostThread.interrupt();
     }
-    
-   
-    
+
 }

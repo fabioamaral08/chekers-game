@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Classe responsável pela conexão entre os jogadores
  */
 package Connection;
 
@@ -24,14 +22,46 @@ import javax.swing.JOptionPane;
  */
 public class Connection implements Runnable {
 
+    /**
+     * Objeto da classe Socket para a troca de mensagens durante o jogo
+     */
     private Socket soc;
+    
+    /**
+     * Thread que aguarda um novo oponente
+     */
     private Thread hostThread;
+    
+    /**
+     * Socket que aguarda um novo oponente
+     */
     private ServerSocket servSoc;
+    
+    /**
+     * Objeto que guarda o IP
+     */
     private InetAddress ip;
+    
+    /**
+     * Guarda a porta
+     */
     private int port;
+    
+    /**
+     * Objeto da classe CBController
+     */
     public CBController controller;
+    
+    /**
+     * Informa se o turno é do jogador ou do oponente
+     */
     private boolean myTurn;
 
+    /**
+     * Construtor da classe
+     * 
+     * @param controller CBController
+     */
     public Connection(CBController controller) {
         this.controller = controller;
     }
@@ -65,6 +95,9 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Cria a conexão do host
+     */
     public void initCon() {
         try {
             this.myTurn = true;
@@ -80,8 +113,9 @@ public class Connection implements Runnable {
     }
 
     /**
-     *
-     * @param board
+     * Envia o tabuleiro com a jogada do jogador
+     * 
+     * @param move Move
      */
     public void sendBord(Move move) {
         try {
@@ -93,6 +127,9 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Recebe o tabuleiro com a jogada do oponente
+     */
     private void recieveBoard() {
         try {
             ObjectInputStream in = new ObjectInputStream(this.soc.getInputStream());
@@ -107,6 +144,9 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Conecta com o host
+     */
     public void connect() {
         try {
             this.myTurn = false;
@@ -117,6 +157,9 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Disconecta
+     */
     public void disconnect() {
         try {
             this.soc.close();
@@ -125,12 +168,18 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Cria a thread do host
+     */
     public void host() {
         Host h = new Host(this);
         this.hostThread = new Thread(h);
         this.hostThread.start();
     }
 
+    /**
+     * Mata a thread do host
+     */
     public void cancelHost() {
         this.hostThread.interrupt();
     }

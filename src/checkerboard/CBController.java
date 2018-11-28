@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Controlador geral
  */
 package checkerboard;
 
@@ -22,13 +20,28 @@ import javax.swing.JOptionPane;
  */
 public class CBController {
 
+    /**
+     * Objeto da classe Connection
+     */
     private Connection con;
+    
+    /**
+     * Thread para receber a jogada do oponente
+     */
     private Thread gameThread;
-    private Game g;
+    
+    /**
+     * Objeto da classe Game
+     */
+    private Game game;
+    
+    /**
+     * Objeto da classe MainFrame
+     */
     private MainFrame mf;
 
     public CBController() {
-        this.g = new Game();
+        this.game = new Game();
         this.con = new Connection(this);
     }
 
@@ -40,11 +53,16 @@ public class CBController {
         return this.con.isMyTurn();
     }
 
+    /**
+     * Movimento que este jogador realizará
+     * 
+     * @param move Move
+     */
     public void movePiece(Move move) {
         String str;
         if (this.con.isMyTurn()) {
             this.con.sendBord(move);
-            this.g.setBoard(move.getBoard());
+            this.game.setBoard(move.getBoard());
             if (move.getPath() == null) {
                 str = "Sua jogada: PERDEU A VEZ!\n\n";
             } else {
@@ -56,15 +74,28 @@ public class CBController {
         }
 
         endGame();
-
     }
 
+    /**
+     * Pega as jogadas possíveis para a peça selecionada
+     * 
+     * @param row int 
+     * @param col int
+     * 
+     * @return List de objetos Move com as jogadas possíveis
+     */
     public List possiblesPlays(int row, int col) {
         Point p = new Point(row, col);
-        return this.g.moveInit(p);
+        return this.game.moveInit(p);
     }
 
-    void connect(String ip, int port) {
+    /**
+     * Conecta a um host
+     * 
+     * @param ip String
+     * @param port int
+     */
+    public void connect(String ip, int port) {
         try {
             this.con.setPort(port);
             this.con.setIp(InetAddress.getByName(ip));
@@ -74,22 +105,31 @@ public class CBController {
         }
     }
 
-    String getIP() {
+    public String getIP() {
         return this.con.getIp().getHostAddress();
     }
 
-    String getPort() {
+    public String getPort() {
         return Integer.toString(this.con.getPort());
     }
 
-    void host() {
+    /**
+     * Faz este jogadar se tornar um host e esperar a conexão de um outro jogador
+     */
+    public void host() {
         this.con.host();
     }
 
+    /**
+     * Deixar de escutar por novos jogadores
+     */
     void cancelHost() {
         this.con.cancelHost();
     }
 
+    /**
+     * Seta uma novo jogo quando um jogador é encontrado
+     */
     public void playerFound() {
         this.gameThread = new Thread(this.con);
         this.gameThread.start();
@@ -100,9 +140,14 @@ public class CBController {
         this.mf.getMenu().setEnabled(false);
 
         this.mf.getCheckerBoard().rebuild(8, 8, 3);
-        this.g.resetBoard();
+        this.game.resetBoard();
     }
 
+    /**
+     * Atualiza o tabuleiro depois de receber a jogada do adversário
+     * 
+     * @param move Move
+     */
     public void setMove(Move move) {
         String str;
         //Verifica desistência
@@ -115,7 +160,7 @@ public class CBController {
             return;
         }
         move.turnBoard();
-        this.g.setBoard(move.getBoard());
+        this.game.setBoard(move.getBoard());
         //Verifica se o oponente perdeu a vez
         if (move.getPath() == null) {
             JOptionPane.showMessageDialog(mf, "Seu oponente não possui movimentos válidos e perdeu a vez!");
@@ -129,7 +174,7 @@ public class CBController {
             this.mf.setTurn("Sua vez!");
         }
         if (!endGame()) {
-            if (!this.g.isPossible2Move()) {
+            if (!this.game.isPossible2Move()) {
                 Move m = new Move(null, 0, null, move.getBoard());
                 JOptionPane.showMessageDialog(mf, "Você não possui movimentos válidos\nPerdeu a vez!");
                 this.con.setMyTurn(true);
@@ -139,6 +184,13 @@ public class CBController {
 
     }
 
+    /**
+     * Pega a String do caminho
+     * 
+     * @param move Move
+     * 
+     * @return String
+     */
     private String getPath(Move move) {
         CheckerBoard cb = this.mf.getCheckerBoard();
         String str = "";
@@ -148,6 +200,9 @@ public class CBController {
         return str;
     }
 
+    /**
+     * Trata o click no botão Desistir, finalizando a partida
+     */
     public void concede() {
         Move m = new Move(null, 0, null, null);
         this.mf.setTitle("Damas");
@@ -157,9 +212,14 @@ public class CBController {
         this.mf.getMenu().setEnabled(true);
     }
 
+    /**
+     * Verifica se a partida terminou, a finalizando caso terminou
+     * 
+     * @return boolean
+     */
     public boolean endGame() {
-        if (this.g.isEndGame()) {
-            if (this.g.isWinner()) {
+        if (this.game.isEndGame()) {
+            if (this.game.isWinner()) {
                 JOptionPane.showMessageDialog(null, "Parabéns, você é o vencedor");
             } else {
                 JOptionPane.showMessageDialog(null, "Você foi derrotado");
@@ -174,6 +234,9 @@ public class CBController {
         return false;
     }
 
+    /**
+     * Mata a thread do jogo
+     */
     public void interrupt() {
         this.gameThread.interrupt();
     }

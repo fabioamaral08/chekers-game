@@ -1,3 +1,7 @@
+/**
+ * Guarda os dados do jogo
+ */
+
 package game;
 
 import java.util.List;
@@ -369,6 +373,11 @@ public class Game {
         this.winner = false;
     }
 
+    /**
+     * Verifica se o jogador tem movimentos possiveis
+     * 
+     * @return 
+     */
     public boolean isPossible2Move() {
         List<Move> moves = new LinkedList();
         for (int i = 0; i < 8; i++) {

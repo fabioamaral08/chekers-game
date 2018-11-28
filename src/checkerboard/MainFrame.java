@@ -256,6 +256,26 @@ public class MainFrame extends JFrame {
     public JButton getConcede() {
         return concede;
     }
+
+    void setHost(boolean b) {
+        if (!b) {
+            this.setTitle("Damas");
+            host.setText("Ser host");
+            connect.setText("Conectar");
+            cb.cancelHost();
+            this.isHost = false;
+        } else {
+            this.setTitle("Buscando ...");
+            host.setText("Cancelar");
+            connect.setText("Informações");
+            isHost = true;
+            cb.host();
+        }
+    }
+
+    void clearLog() {
+        this.logText.setText("");
+    }
     
     
 

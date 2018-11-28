@@ -1,3 +1,7 @@
+/**
+ * Classe principal
+ */
+
 package checkerboard;
 
 import java.awt.BorderLayout;
@@ -21,17 +25,53 @@ import javax.swing.JTextArea;
 
 public class MainFrame extends JFrame {
 
+    /**
+     * Componentes da barra de menu superior
+     */
     private JMenuBar menuBar;
     private JMenu menu;
+    
+    /**
+     * Itens de menu
+     */
     private JMenuItem host;
     private JMenuItem connect;
+    
+    /**
+     * Componente para exibição do histórico de jogadas da partida
+     */
     private JTextArea logText;
+    
+    /**
+     * Botão da desistencia
+     */
     private JButton concede;
+    
+    /**
+     * Objeto da classe CBController
+     */
     private CBController cb;
+    
+    /**
+     * Flag para sinalizar se o jogador é o host da partida
+     */
     private boolean isHost;
+    
+    /**
+     * Objeto da classe CheckerBoard
+     */
     private CheckerBoard checkerBoard;
+    
+    /**
+     * Componente que exibe de quem é o turno
+     */
     private JLabel turn;
 
+    /**
+     * Main
+     * 
+     * @param args 
+     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -45,6 +85,9 @@ public class MainFrame extends JFrame {
         });
     }
 
+    /**
+     * Construtor da classe
+     */
     public MainFrame() {
         this.setTitle("Damas");
         isHost = false;
@@ -89,6 +132,9 @@ public class MainFrame extends JFrame {
         });
     }
 
+    /**
+     * Inicializa o componente logText
+     */
     public void createTextArea() {
         this.logText = new JTextArea();
         this.logText.setEditable(false);
@@ -103,6 +149,9 @@ public class MainFrame extends JFrame {
         add(scroll);
     }
 
+    /**
+     * Inicializa o botão concede
+     */
     private void createButton() {
         this.concede = new JButton("Desistir");
         this.concede.setSize(200, CheckerBoard.HOUSE_SIDE / 2);
@@ -114,6 +163,9 @@ public class MainFrame extends JFrame {
 
     }
 
+    /**
+     * Inicializa o componente turn
+     */
     private void createLabel() {
         this.turn = new JLabel("Turno", JLabel.CENTER);
         this.turn.setSize(200, CheckerBoard.HOUSE_SIDE / 2);
@@ -123,6 +175,9 @@ public class MainFrame extends JFrame {
         add(this.turn);
     }
 
+    /**
+     * Inicializa o menu
+     */
     public void createMenu() {
         this.menuBar = new JMenuBar();
         menu = new JMenu();
@@ -142,6 +197,9 @@ public class MainFrame extends JFrame {
 
     }
 
+    /**
+     * Ação do item de menu host
+     */
     public void hostAction() {
         if (isHost) {
             this.setTitle("Damas");
@@ -159,6 +217,9 @@ public class MainFrame extends JFrame {
 
     }
 
+    /**
+     * Ação do item de menu conectar
+     */
     public void connectAction() {
         if (isHost) {
             String msg = "Seu IP é: " + cb.getIP() + "\n"
@@ -178,8 +239,6 @@ public class MainFrame extends JFrame {
     public void setTurn(String str) {
         this.turn.setText(str);
     }
-    
-    
 
     public void setLogText(String text) {
         String str = this.logText.getText();

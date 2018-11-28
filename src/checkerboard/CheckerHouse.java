@@ -1,3 +1,7 @@
+/**
+ * Guarda os dados da casa do tabuleiro
+ */
+
 package checkerboard;
 
 import game.Move;
@@ -6,7 +10,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
@@ -62,22 +65,50 @@ public class CheckerHouse extends JPanel {
      */
     public static final int SELECTION_MODE_MOVE = 2;
 
+    /**
+     * Margem
+     */
     private float margin;
+    
+    /**
+     * Lista de movimentos que passam pela casa
+     */
     private List<Move> moves;
 
+    /**
+     * Cores para desenhar a casa
+     */
     private Color bgColor;
     private Color fgColor;
+    
+    /**
+     * Cor de seleção da casa
+     */
     private Color selectionColor;
+    
+    /**
+     * Lista de cores dos possíveis caminhos
+     */
     private List<Color> pathColor;
 
+    /**
+     * Informa qual o tipo de casa é - peça normal, dama ou vazia
+     */
     private int contentType;
+    
+    /**
+     * Tipo de seleção
+     */
     private int selectionMode;
+    
+    /**
+     * Borda da seleção
+     */
     private BasicStroke selectionBorder;
-
-    public List<Color> getPathColor() {
-        return pathColor;
-    }
-
+    
+    /**
+     * Posição da casa
+     */
     private int row;
     private int col;
 
@@ -156,6 +187,11 @@ public class CheckerHouse extends JPanel {
 
     }
 
+    /**
+     * Desenha a casa
+     * 
+     * @param g Graphics
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
@@ -314,6 +350,10 @@ public class CheckerHouse extends JPanel {
 
     public int getSelectionMode() {
         return selectionMode;
+    }
+    
+    public List<Color> getPathColor() {
+        return pathColor;
     }
 
     public void setSelectionMode(int selectionMode) {

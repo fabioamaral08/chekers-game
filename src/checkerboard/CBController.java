@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -47,6 +48,17 @@ public class CBController {
             str = "Sua jogada:\n" + "Caminho: " + getPath(move) + "\n"
                     + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
             this.mf.setLogText(str);
+        }
+
+        if (this.g.isEndGame()) {
+            if (this.g.isWinner()) {
+                JOptionPane.showMessageDialog(null, "Parabéns, você é o vencedor");
+            } else {
+                JOptionPane.showMessageDialog(null, "Você foi derrotado");
+            }
+            
+            this.con.disconnect();
+            this.gameThread.interrupt();
         }
     }
 
@@ -97,6 +109,17 @@ public class CBController {
         str = "Jogada do oponente:\n" + "Caminho: " + getPath(move) + "\n"
                 + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
         this.mf.setLogText(str);
+        
+        if (this.g.isEndGame()) {
+            if (this.g.isWinner()) {
+                JOptionPane.showMessageDialog(null, "Parabéns, você é o vencedor");
+            } else {
+                JOptionPane.showMessageDialog(null, "Você foi derrotado");
+            }
+            
+            this.con.disconnect();
+            this.gameThread.interrupt();
+        }
 
     }
 

@@ -47,28 +47,38 @@ public class Game {
      */
     private static final int[][] INIT_BOARD
             = {
-                {0, -1, 0, -1, 0, -1, 0, -1},
-                {-1, 0, -1, 0, -1, 0, -1, 0},
-                {0, -1, 0, -1, 0, -1, 0, -1},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
-                {1, 0, 1, 0, 1, 0, 1, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, -1, 0, 0, 0},
+                {0, 0, 0, 1, 0, 0, 0, 0},
+                {1, 0, 0, 0, 1, 0, 1, 0},
                 {0, 1, 0, 1, 0, 1, 0, 1},
-                {1, 0, 1, 0, 1, 0, 1, 0}};
+                {1, 0, 1, 0, 1, 0, 1, 0}
+            };
 
+//    {
+//                {0, -1, 0, -1, 0, -1, 0, -1},
+//                {-1, 0, -1, 0, -1, 0, -1, 0},
+//                {0, -1, 0, -1, 0, -1, 0, -1},
+//                {0, 0, 0, 0, 0, 0, 0, 0},
+//                {0, 0, 0, 0, 0, 0, 0, 0},
+//                {1, 0, 1, 0, 1, 0, 1, 0},
+//                {0, 1, 0, 1, 0, 1, 0, 1},
+//                {1, 0, 1, 0, 1, 0, 1, 0}}
     /**
      * Tabuleiro com estado atual do jogo
      */
     private int[][] board
-            = {
-    { 0, -1,  0, -1,  0, -1,  0, -1},
-    {-1,  0,  0,  0,  0,  0,  0,  0},
-    { 0, -1,  0, -1,  0, -1,  0, -1},
-    { 0,  0,  0,  0,  0,  0,  0,  0},
-    { 0,  0,  0, -1,  0, -1,  0,  0},
-    { 1,  0,  0,  0,  0,  0,  0,  0},
-    { 0,  1,  0, -1,  0, -1,  0,  1},
-    { 1,  0,  1,  0,  1,  0,  1,  0}};/*{
+            = /*{
+                {0, -1, 0, -1, 0, -1, 0, -1},
+                {-1, 0, 0, 0, 0, 0, 0, 0},
+                {0, -1, 0, -1, 0, -1, 0, -1},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, -1, 0, -1, 0, 0},
+                {1, 0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 0, -1, 0, -1, 0, 1},
+                {1, 0, 1, 0, 1, 0, 1, 0}};*//*{
                 {0,  -1, 0, -1, 0, -1, 0, -1},
                 {-1, 0, -1, 0, 0, 0, 0, 0},
                 {0, 0, 0, -1, 0, -1, 0, -1},
@@ -76,8 +86,7 @@ public class Game {
                 {0, 0, 0, -1, 0, -1, 0, 0},
                 {1, 0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 0, 0, 0, 0, 1},
-                {1, 0, 1, 0, 2, 0, 1, 0}};*/
-//    {
+                {1, 0, 1, 0, 2, 0, 1, 0}};*/ //    {
             //        {0, -1, 0, -1, 0, -1, 0, -1},
             //        {-1, 0, -1, 0, -1, 0, -1, 0},
             //        {0, -1, 0, -1, 0, -1, 0, -1},
@@ -105,8 +114,17 @@ public class Game {
     { 0,  1,  0,  1,  0,  1,  0,  1},
     { 1,  0,  1,  0,  1,  0,  1,  0}};
 
-             */
-
+             */ // Teste fim de jogo
+            {
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, -1, 0, 0, 0, 0},
+                {1, 0, 1, 0, 1, 0, 1, 0},
+                {0, 1, 0, 1, 0, 1, 0, 1},
+                {1, 0, 1, 0, 1, 0, 1, 0}
+            };
 
     public Game() {
         this.winner = false;
@@ -115,15 +133,16 @@ public class Game {
     public boolean isWinner() {
         return winner;
     }
-    
-    
 
     /**
-     * Verifica a peça na poção passada por parametro, verificando também se não está fora do tabuleiro
+     * Verifica a peça na poção passada por parametro, verificando também se não
+     * está fora do tabuleiro
+     *
      * @param i Linha
      * @param j Coluna
      * @param board Tabulerio a ser verificado
-     * @return Retorna a peça na posição indicada (1 caso a posição esteja fora do tabuleiro)
+     * @return Retorna a peça na posição indicada (1 caso a posição esteja fora
+     * do tabuleiro)
      */
     public int borderChecker(int i, int j, int[][] board) {
         if (i < 0 || j < 0 || i > 7 || j > 7) {
@@ -391,24 +410,25 @@ public class Game {
     public boolean isEndGame() {
         int lin, col;
         boolean ally = false, enemy = false;
-        for (int i = 1; i < 64; i += 2) {
-            lin = i / 8;
-            col = i % 8;
-            if (this.board[lin][col] > Game.BLANK) {
-                ally = true;
-            } else if (this.board[lin][col] < Game.BLANK) {
-                enemy = true;
+        for (int i = 1; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (this.board[i][j] > Game.BLANK) {
+                    ally = true;
+                } else if (this.board[i][j] < Game.BLANK) {
+                    enemy = true;
+                }
+                if (ally && enemy) {
+                    return false;
+                }
             }
-            if (ally && enemy) {
-                return false;
-            }
+
         }
         this.winner = ally;
         return true;
     }
 
     /**
-     *  Retorna o tabuleiro pro estado de inicio de jogo
+     * Retorna o tabuleiro pro estado de inicio de jogo
      */
     public void resetBoard() {
         this.board = cloneBoard(INIT_BOARD);

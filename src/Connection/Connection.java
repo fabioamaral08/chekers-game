@@ -62,10 +62,9 @@ public class Connection implements Runnable {
     @Override
     public void run() {
         while(true){
-            if(!myTurn){
                 recieveBoard();
                 myTurn = true;
-            }
+            
         }
     }
 

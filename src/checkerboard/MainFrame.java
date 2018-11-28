@@ -27,6 +27,7 @@ public class MainFrame extends JFrame {
     private JButton concede;
     private CBController cb;
     private boolean isHost;
+    private CheckerBoard checkerBoard;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -53,8 +54,8 @@ public class MainFrame extends JFrame {
         createMenu();
         createTextArea();
         createButton();
-        CheckerBoard checkerBoard = new CheckerBoard(8, 8, 3, cb);
-        cb.setCb(checkerBoard);
+        checkerBoard = new CheckerBoard(8, 8, 3, cb);
+        cb.setMF(this);
         getContentPane().add(checkerBoard, BorderLayout.CENTER);
 
         host.addActionListener(new ActionListener() {
@@ -83,9 +84,11 @@ public class MainFrame extends JFrame {
         });
     }
 
+    
     public void createTextArea() {
         this.logText = new JTextArea();
         this.logText.setEditable(false);
+        this.logText.setLineWrap(true);
         JScrollPane scroll = new JScrollPane(logText);
         scroll.setBorder(BorderFactory.createTitledBorder("Histórico de Jogadas"));
         scroll.setSize(200, 500);
@@ -153,5 +156,16 @@ public class MainFrame extends JFrame {
         }
 
     }
+    
+    public void setLogText(String text){
+        String str = this.logText.getText();
+        this.logText.setText(str + text);
+    }
+
+    public CheckerBoard getCheckerBoard() {
+        return checkerBoard;
+    }
+    
+    
 
 }

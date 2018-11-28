@@ -5,8 +5,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
@@ -52,6 +53,8 @@ public class CheckerHouse extends JPanel {
      * Especifica que a casa está selecionada.
      */
     public static final int SELECTION_MODE_SELECTED = 1;
+    
+    public static final int SELECTION_MODE_HOVER = 3;
     /**
      * Especifica que a casa é um posição destino. A casa pode ser alcançada
      * pelo movimento da pedra, seja peão ou dama, a partir da casa selecionada.
@@ -93,7 +96,6 @@ public class CheckerHouse extends JPanel {
         contentType = CheckerHouse.CONTENT_TYPE_EMPTY;
         selectionMode = CheckerHouse.SELECTION_MODE_NONE;
 
-       
         moves = new LinkedList();
 
         pathColor = new LinkedList();
@@ -107,21 +109,6 @@ public class CheckerHouse extends JPanel {
         this.col = col;
 
         setLayout(null);
-//        addMouseListener(new MouseAdapter() {
-//            private Color background;
-//
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                if (selectionMode == CheckerHouse.SELECTION_MODE_SELECTED) {
-//                    selectionMode = CheckerHouse.SELECTION_MODE_NONE;
-//                } else {
-//                    selectionMode = CheckerHouse.SELECTION_MODE_SELECTED;
-//
-//                }
-//                repaint();
-//            }
-//
-//        });
 
     }
 
@@ -133,12 +120,19 @@ public class CheckerHouse extends JPanel {
         g2D.setBackground(bgColor);
         g2D.clearRect(0, 0, getWidth(), getHeight());
 
+        if (selectionMode == CheckerHouse.SELECTION_MODE_SELECTED) {
+            g2D.setColor(selectionColor);
+            drawSelectionRect(g2D, 0);
+        }
+        
+        if (selectionMode == CheckerHouse.SELECTION_MODE_HOVER) {
+            g2D.setColor(selectionColor);
+            drawSelectionRect(g2D, 0);
+        }
+
         if (pathColor.size() == 1) {
 
-            if (selectionMode == CheckerHouse.SELECTION_MODE_SELECTED) {
-                g2D.setColor(selectionColor);
-                drawSelectionRect(g2D, 0);
-            } else if (selectionMode == CheckerHouse.SELECTION_MODE_MOVE) {
+            if (selectionMode == CheckerHouse.SELECTION_MODE_MOVE) {
                 g2D.setColor(pathColor.get(0));
                 drawSelectionRect(g2D, 0);
             }

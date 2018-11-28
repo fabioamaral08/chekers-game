@@ -24,25 +24,29 @@ public class CBController {
     private Connection con;
     private Thread gameThread;
     private Game g;
-    private CheckerBoard cb;
+    private MainFrame mf;
 
     public CBController() {
         this.g = new Game();
         this.con = new Connection(this);
     }
 
-    public void setCb(CheckerBoard cb) {
-        this.cb = cb;
+    public void setMF(MainFrame mf) {
+        this.mf = mf;
     }
-    
-     public boolean isMyTurn(){
+
+    public boolean isMyTurn() {
         return this.con.isMyTurn();
     }
 
-    public void movePiece(Move m) {
+    public void movePiece(Move move) {
+        String str;
         if (this.con.isMyTurn()) {
-            this.con.sendBord(m);
-            this.g.setBoard(m.getBoard());
+            this.con.sendBord(move);
+            this.g.setBoard(move.getBoard());
+            str = "Sua jogada:\n" + "Caminho: " + getPath(move) + "\n"
+                    + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
+            this.mf.setLogText(str);
         }
     }
 
@@ -81,14 +85,27 @@ public class CBController {
         this.gameThread = new Thread(this.con);
         this.gameThread.start();
 
-        this.cb.rebuild(8, 8, 3);
+        this.mf.getCheckerBoard().rebuild(8, 8, 3);
         this.g.resetBoard();
     }
 
     public void setMove(Move move) {
+        String str;
         move.turnBoard();
         this.g.setBoard(move.getBoard());
-        cb.repaintBoard(move);
+        this.mf.getCheckerBoard().opponentPlays(move);
+        str = "Jogada do oponente:\n" + "Caminho: " + getPath(move) + "\n"
+                + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
+        this.mf.setLogText(str);
+
+    }
+
+    private String getPath(Move move) {
+        String str = "";
+        for (Point p : move.getPath()) {
+            str += "(" + Integer.toString(p.x + 1) + "," + Integer.toString(p.y + 1) + ") ";
+        }
+        return str;
     }
 
 }

@@ -139,6 +139,11 @@ public class CheckerBoard extends JPanel {
         CheckerHouse chB = getHouseAt(b.y / HOUSE_SIDE, b.x / HOUSE_SIDE);
         CheckerHouse chA = getHouseAt(a.y / HOUSE_SIDE, a.x / HOUSE_SIDE);
 
+        if (!cb.isMyTurn()) {
+            setSelectionModeNone();
+            return;
+        }
+
         if (chA.getContentType() == CheckerHouse.CONTENT_TYPE_EMPTY || chA == chB) {
             houseSelected(b);
             return;
@@ -297,22 +302,12 @@ public class CheckerBoard extends JPanel {
 
     /**
      * Destaca a jogada do oponente
-     * @param m 
+     *
+     * @param m
      */
-    public void oponentPlays(Move m) {
-        CheckerHouse ch;
-        for (Point pos : m.getPath()) {
-            ch = getHouseAt(pos.x, pos.y);
-            ch.setSelectionMode(CheckerHouse.SELECTION_MODE_SELECTED);
-        }
-        try {
-            wait(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CheckerBoard.class.getName()).log(Level.SEVERE, null, ex);
-        } {
-       
-    }
-        setSelectionModeNone();
+    public synchronized void opponentPlays(Move m) {
+        PrintOpponent po = new PrintOpponent(m);
+        po.start();
     }
 
     /**
@@ -350,7 +345,6 @@ public class CheckerBoard extends JPanel {
                 house.setBounds(c * HOUSE_SIDE, (rows - r - 1) * HOUSE_SIDE, HOUSE_SIDE, HOUSE_SIDE);
 
                 houses.put((rows - r - 1) * cols + c, house);
-                // System.out.println((rows - r - 1) * cols + c);
                 add(house);
             }
         }
@@ -469,6 +463,38 @@ public class CheckerBoard extends JPanel {
             i++;
 
         }//for jogadas
+    }
+
+    class PrintOpponent extends Thread {
+
+        private Move m;
+
+        public PrintOpponent(Move m) {
+            this.m = m;
+        }
+
+        @Override
+        public void run() {
+            CheckerHouse ch;
+            for (Point pos : m.getPath()) {
+                ch = getHouseAt(pos.x, pos.y);
+                ch.setSelectionMode(CheckerHouse.SELECTION_MODE_SELECTED);
+
+            }
+            try {
+                synchronized (this) {
+
+                    this.wait(2000);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CheckerBoard.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                setSelectionModeNone();
+                repaintBoard(m);
+
+            }
+        }
+
     }
 
 }

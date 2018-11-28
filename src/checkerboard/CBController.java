@@ -45,8 +45,13 @@ public class CBController {
         if (this.con.isMyTurn()) {
             this.con.sendBord(move);
             this.g.setBoard(move.getBoard());
-            str = "Sua jogada:\n" + "Caminho: " + getPath(move) + "\n"
-                    + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
+            if (move.getPath() == null) {
+                str = "Sua jogada: PERDEU A VEZ!\n\n";
+                this.mf.setLogText(str);
+            } else {
+                str = "Sua jogada:\n" + "Caminho: " + getPath(move) + "\n"
+                        + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
+            }
             this.mf.setLogText(str);
             this.mf.setTurn("Vez do oponente");
         }
@@ -101,22 +106,37 @@ public class CBController {
 
     public void setMove(Move move) {
         String str;
+        //Verifica desistência
         if (move.getBoard() == null) {
             JOptionPane.showMessageDialog(null, "Seu Oponente Desistiu !");
             this.mf.setTitle("Damas");
+            this.mf.getConcede().setEnabled(false);
+            this.mf.getMenu().setEnabled(true);
             this.con.disconnect();
             return;
         }
         move.turnBoard();
         this.g.setBoard(move.getBoard());
-        this.mf.getCheckerBoard().opponentPlays(move);
-        str = "Jogada do oponente:\n" + "Caminho: " + getPath(move) + "\n"
-                + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
-        this.mf.setLogText(str);
-
-        endGame();
-        
-        this.mf.setTurn("Sua vez!");
+        //Verifica se o oponente perdeu a vez
+        if (move.getPath() == null) {
+            JOptionPane.showMessageDialog(mf, "Seu oponente não possui movimentos válidos e perdeu a vez!");
+            str = "Jogada do oponente: PERDEU A VEZ\n\n";
+            this.mf.setLogText(str);
+        } else {
+            this.mf.getCheckerBoard().opponentPlays(move);
+            str = "Jogada do oponente:\n" + "Caminho: " + getPath(move) + "\n"
+                    + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
+            this.mf.setLogText(str);
+            this.mf.setTurn("Sua vez!");
+        }
+        if (!endGame()) {
+            if (!this.g.isPossible2Move()) {
+                Move m = new Move(null, 0, null, move.getBoard());
+                JOptionPane.showMessageDialog(mf, "Você não possui movimentos válidos\nPerdeu a vez!");
+                this.con.setMyTurn(true);
+                movePiece(m);
+            }
+        }
 
     }
 
@@ -133,13 +153,12 @@ public class CBController {
         Move m = new Move(null, 0, null, null);
         this.mf.setTitle("Damas");
         this.con.sendBord(m);
-        this.con.disconnect();
         this.gameThread.interrupt();
         this.mf.getConcede().setEnabled(false);
         this.mf.getMenu().setEnabled(true);
     }
 
-    public void endGame() {
+    public boolean endGame() {
         if (this.g.isEndGame()) {
             if (this.g.isWinner()) {
                 JOptionPane.showMessageDialog(null, "Parabéns, você é o vencedor");
@@ -149,9 +168,15 @@ public class CBController {
 
             this.con.disconnect();
             this.gameThread.interrupt();
+            this.mf.getConcede().setEnabled(false);
+            this.mf.getMenu().setEnabled(true);
+            return true;
         }
-        this.mf.getConcede().setEnabled(false);
-        this.mf.getMenu().setEnabled(true);
+        return false;
+    }
+
+    public void interrupt() {
+        this.gameThread.interrupt();
     }
 
 }

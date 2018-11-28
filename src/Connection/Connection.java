@@ -13,8 +13,10 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -70,6 +72,7 @@ public class Connection implements Runnable {
             this.servSoc = new ServerSocket(5000);
             this.port = this.servSoc.getLocalPort();
             this.soc = this.servSoc.accept();
+            this.servSoc.close();
             this.controller.playerFound();
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,9 +85,9 @@ public class Connection implements Runnable {
      */
     public void sendBord(Move move) {
         try {
+            this.myTurn = false;
             ObjectOutputStream out = new ObjectOutputStream(this.soc.getOutputStream());
             out.writeObject(move);
-            this.myTurn = false;
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -96,7 +99,9 @@ public class Connection implements Runnable {
             Move move = (Move) in.readObject();
             this.controller.setMove(move);
         } catch (IOException ex) {
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+            if (ex instanceof SocketException) {
+                this.controller.interrupt();
+            }
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -108,14 +113,13 @@ public class Connection implements Runnable {
             this.soc = new Socket(ip, port);
             this.controller.playerFound();
         } catch (IOException ex) {
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Falha na conexão!");
         }
     }
 
     public void disconnect() {
         try {
             this.soc.close();
-            this.servSoc.close();
         } catch (IOException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -129,6 +133,10 @@ public class Connection implements Runnable {
 
     public void cancelHost() {
         this.hostThread.interrupt();
+    }
+
+    public void setMyTurn(boolean myTurn) {
+        this.myTurn = myTurn;
     }
 
 }

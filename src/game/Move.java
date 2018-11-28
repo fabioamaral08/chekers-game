@@ -13,7 +13,7 @@ import java.io.Serializable;
  *
  * @author gustavo
  */
-public class Move implements Comparable<Move>,Serializable {
+public class Move implements Comparable<Move>, Serializable {
 
     /**
      * Posição da peça a jogar
@@ -79,9 +79,11 @@ public class Move implements Comparable<Move>,Serializable {
     }
 
     public void turnBoard() {
-        for (Point point : path) {
-            point.x = 7 - point.x;
-            point.y = 7 - point.y;
+        if (path != null) {
+            for (Point point : path) {
+                point.x = 7 - point.x;
+                point.y = 7 - point.y;
+            }
         }
         int[][] newBoard = new int[8][8];
         for (int i = 0; i < 8; i++) {

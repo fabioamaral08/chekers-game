@@ -52,7 +52,7 @@ public class Game {
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, -1, 0, 0, 0},
                 {0, 0, 0, 1, 0, 0, 0, 0},
-                {1, 0, 0, 0, 1, 0, 1, 0},
+                {1, 0, 1, 0, 1, 0, 1, 0},
                 {0, 1, 0, 1, 0, 1, 0, 1},
                 {1, 0, 1, 0, 1, 0, 1, 0}
             };
@@ -433,5 +433,22 @@ public class Game {
     public void resetBoard() {
         this.board = cloneBoard(INIT_BOARD);
         this.winner = false;
+    }
+
+    public boolean isPossible2Move() {
+        List<Move> moves = new LinkedList();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (this.board[i][j] > Game.BLANK) {
+                    moves.addAll(this.moveInit(new Point(i, j)));
+                }
+            }
+        }
+        for (Move move : moves) {
+            if (move.getPath().size() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }

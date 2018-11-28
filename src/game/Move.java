@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Armazena os dados do movimento realizado
  */
 package game;
 
@@ -13,7 +11,7 @@ import java.io.Serializable;
  *
  * @author gustavo
  */
-public class Move implements Comparable<Move>,Serializable {
+public class Move implements Comparable<Move>, Serializable {
 
     /**
      * Posição da peça a jogar
@@ -66,6 +64,14 @@ public class Move implements Comparable<Move>,Serializable {
         return path;
     }
 
+    /**
+     * Compara duas instancias de Move quanto ao número de peças tomadas, de 
+     * forma crescente
+     * 
+     * @param o Move
+     * 
+     * @return int
+     */
     @Override
     public int compareTo(Move o) {
         if (this.piecesTaken < o.piecesTaken) {
@@ -78,10 +84,15 @@ public class Move implements Comparable<Move>,Serializable {
         return 0;
     }
 
+    /**
+     * Espelha o tabuleiro para que seja enviado ao adversário
+     */
     public void turnBoard() {
-        for (Point point : path) {
-            point.x = 7 - point.x;
-            point.y = 7 - point.y;
+        if (this.path != null) {
+            for (Point point : path) {
+                point.x = 7 - point.x;
+                point.y = 7 - point.y;
+            }
         }
         int[][] newBoard = new int[8][8];
         for (int i = 0; i < 8; i++) {

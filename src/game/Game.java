@@ -408,9 +408,9 @@ public class Game {
      * contrario;
      */
     public boolean isEndGame() {
-        int lin, col;
+
         boolean ally = false, enemy = false;
-        for (int i = 1; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (this.board[i][j] > Game.BLANK) {
                     ally = true;

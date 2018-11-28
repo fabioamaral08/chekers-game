@@ -68,6 +68,10 @@ public class Game {
         this.winner = false;
     }
 
+    public int[][] getBoard() {
+        return board;
+    }
+    
     public boolean isWinner() {
         return winner;
     }

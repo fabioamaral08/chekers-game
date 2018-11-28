@@ -43,6 +43,7 @@ public class CBController {
     public CBController() {
         this.game = new Game();
         this.con = new Connection(this);
+        this.game.resetBoard();
     }
 
     public void setMF(MainFrame mf) {
@@ -138,9 +139,17 @@ public class CBController {
         this.mf.setTitle("Damas - Em jogo");
         this.mf.getConcede().setEnabled(true);
         this.mf.getMenu().setEnabled(false);
-
+        this.mf.setHost(false);
         this.mf.getCheckerBoard().rebuild(8, 8, 3);
         this.game.resetBoard();
+        Move m = new Move(null,0,null,this.game.getBoard());
+        if(this.con.isMyTurn()){
+            this.mf.setTurn("Sua vez!");
+        }else{
+            this.mf.setTurn("Vez do oponente");
+        }
+        this.mf.clearLog();
+        this.mf.getCheckerBoard().repaintBoard(m);
     }
 
     /**
@@ -157,6 +166,7 @@ public class CBController {
             this.mf.getConcede().setEnabled(false);
             this.mf.getMenu().setEnabled(true);
             this.con.disconnect();
+            this.con.setMyTurn(false);
             return;
         }
         move.turnBoard();

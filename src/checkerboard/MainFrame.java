@@ -84,7 +84,7 @@ public class MainFrame extends JFrame {
         concede.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Manda pro controlador resolver
+                cb.concede();
             }
         });
     }
@@ -93,7 +93,7 @@ public class MainFrame extends JFrame {
         this.logText = new JTextArea();
         this.logText.setEditable(false);
         this.logText.setLineWrap(true);
-        this.logText.setFont(new Font("Dialog", Font.BOLD, 14));
+        this.logText.setFont(new Font("Dialog", Font.BOLD, 12));
         JScrollPane scroll = new JScrollPane(logText);
         scroll.setBorder(BorderFactory.createTitledBorder("Histórico de Jogadas"));
         scroll.setSize(200, 7 * CheckerBoard.HOUSE_SIDE);
@@ -108,6 +108,7 @@ public class MainFrame extends JFrame {
         this.concede.setSize(200, CheckerBoard.HOUSE_SIDE / 2);
         this.concede.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 7 * CheckerBoard.HOUSE_SIDE + CheckerBoard.HOUSE_SIDE / 2);
         this.concede.setFont(new Font("Dialog", Font.BOLD, 15));
+        this.concede.setEnabled(false);
 
         add(concede);
 
@@ -188,5 +189,15 @@ public class MainFrame extends JFrame {
     public CheckerBoard getCheckerBoard() {
         return checkerBoard;
     }
+
+    public JMenu getMenu() {
+        return menu;
+    }
+
+    public JButton getConcede() {
+        return concede;
+    }
+    
+    
 
 }

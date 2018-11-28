@@ -48,18 +48,11 @@ public class CBController {
             str = "Sua jogada:\n" + "Caminho: " + getPath(move) + "\n"
                     + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
             this.mf.setLogText(str);
+            this.mf.setTurn("Vez do oponente");
         }
 
-        if (this.g.isEndGame()) {
-            if (this.g.isWinner()) {
-                JOptionPane.showMessageDialog(null, "Parabéns, você é o vencedor");
-            } else {
-                JOptionPane.showMessageDialog(null, "Você foi derrotado");
-            }
-            
-            this.con.disconnect();
-            this.gameThread.interrupt();
-        }
+        endGame();
+
     }
 
     public List possiblesPlays(int row, int col) {
@@ -97,38 +90,68 @@ public class CBController {
         this.gameThread = new Thread(this.con);
         this.gameThread.start();
 
+        JOptionPane.showMessageDialog(null, "Oponente conectado!");
+        this.mf.setTitle("Damas - Em jogo");
+        this.mf.getConcede().setEnabled(true);
+        this.mf.getMenu().setEnabled(false);
+
         this.mf.getCheckerBoard().rebuild(8, 8, 3);
         this.g.resetBoard();
     }
 
     public void setMove(Move move) {
         String str;
+        if (move.getBoard() == null) {
+            JOptionPane.showMessageDialog(null, "Seu Oponente Desistiu !");
+            this.mf.setTitle("Damas");
+            this.con.disconnect();
+            return;
+        }
         move.turnBoard();
         this.g.setBoard(move.getBoard());
         this.mf.getCheckerBoard().opponentPlays(move);
         str = "Jogada do oponente:\n" + "Caminho: " + getPath(move) + "\n"
                 + "Número de peças tomadas: " + move.getPiecesTaken() + "\n\n";
         this.mf.setLogText(str);
+
+        endGame();
         
+        this.mf.setTurn("Sua vez!");
+
+    }
+
+    private String getPath(Move move) {
+        CheckerBoard cb = this.mf.getCheckerBoard();
+        String str = "";
+        for (Point p : move.getPath()) {
+            str += "(" + Integer.toString(p.x + 1) + "," + cb.changeNumber(p.y) + ") ";
+        }
+        return str;
+    }
+
+    public void concede() {
+        Move m = new Move(null, 0, null, null);
+        this.mf.setTitle("Damas");
+        this.con.sendBord(m);
+        this.con.disconnect();
+        this.gameThread.interrupt();
+        this.mf.getConcede().setEnabled(false);
+        this.mf.getMenu().setEnabled(true);
+    }
+
+    public void endGame() {
         if (this.g.isEndGame()) {
             if (this.g.isWinner()) {
                 JOptionPane.showMessageDialog(null, "Parabéns, você é o vencedor");
             } else {
                 JOptionPane.showMessageDialog(null, "Você foi derrotado");
             }
-            
+
             this.con.disconnect();
             this.gameThread.interrupt();
         }
-
-    }
-
-    private String getPath(Move move) {
-        String str = "";
-        for (Point p : move.getPath()) {
-            str += "(" + Integer.toString(p.x + 1) + "," + Integer.toString(p.y + 1) + ") ";
-        }
-        return str;
+        this.mf.getConcede().setEnabled(false);
+        this.mf.getMenu().setEnabled(true);
     }
 
 }

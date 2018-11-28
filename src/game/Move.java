@@ -88,7 +88,9 @@ public class Move implements Comparable<Move>, Serializable {
      * Espelha o tabuleiro para que seja enviado ao adversário
      */
     public void turnBoard() {
-        if (this.path != null) {
+
+        if (path != null) {
+
             for (Point point : path) {
                 point.x = 7 - point.x;
                 point.y = 7 - point.y;

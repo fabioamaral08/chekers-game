@@ -139,6 +139,7 @@ public class MainFrame extends JFrame {
         this.logText = new JTextArea();
         this.logText.setEditable(false);
         this.logText.setLineWrap(true);
+        this.logText.setWrapStyleWord(true);
         this.logText.setFont(new Font("Dialog", Font.BOLD, 12));
         JScrollPane scroll = new JScrollPane(logText);
         scroll.setBorder(BorderFactory.createTitledBorder("Histórico de Jogadas"));

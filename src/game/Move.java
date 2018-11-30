@@ -38,7 +38,7 @@ public class Move implements Comparable<Move>, Serializable {
      *
      * @param curPos int
      * @param piecesTaken int
-     * @param path List<Path>
+     * @param path List of Path
      * @param board int[][]
      */
     public Move(Point curPos, int piecesTaken, List<Point> path, int[][] board) {

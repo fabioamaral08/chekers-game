@@ -66,6 +66,12 @@ public class MainFrame extends JFrame {
      * Componente que exibe de quem é o turno
      */
     private JLabel turn;
+    
+    
+    /**
+     * Menu de opções principais
+     */
+    private MenuOptions mo;
 
     /**
      * Main
@@ -97,8 +103,8 @@ public class MainFrame extends JFrame {
         this.setResizable(false);
 
         cb = new CBController();
-
         createMenu();
+        
         createTextArea();
         createButton();
         createLabel();
@@ -195,6 +201,10 @@ public class MainFrame extends JFrame {
         menu.add(connect);
         this.menuBar.add(menu);
         this.setJMenuBar(menuBar);
+        
+        mo = new MenuOptions();
+        add(mo);
+        mo.requestFocusInWindow();   
 
     }
 

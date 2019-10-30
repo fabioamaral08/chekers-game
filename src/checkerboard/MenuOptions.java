@@ -23,7 +23,7 @@ public class MenuOptions  extends JPanel{
     public MenuOptions(){
         setSize(new Dimension(400, 100));
         createButtons();
-       
+        this.setVisible(true);
     }
     
      private void createButtons() {

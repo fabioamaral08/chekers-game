@@ -1,6 +1,8 @@
 # chekers-game  
 __COMO JOGAR__
 
+-Agora tem um menu bugado kkk;
+
 -Execute o "MainFrame", na janela aberta vá em "Jogar"(Canto direito superior), depois "Ser Host";
 
 -No mesmo lugar, clique novamente em "Jogar" e vá em "Informações", lá estará o seu IP e a porta usada, informe-o IP ao seu adversário;

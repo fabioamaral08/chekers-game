@@ -1,7 +1,6 @@
 /**
  * Classe principal
  */
-
 package checkerboard;
 
 import java.awt.BorderLayout;
@@ -30,53 +29,51 @@ public class MainFrame extends JFrame {
      */
     private JMenuBar menuBar;
     private JMenu menu;
-    
+
     /**
      * Itens de menu
      */
     private JMenuItem host;
     private JMenuItem connect;
-    
+
     /**
      * Componente para exibição do histórico de jogadas da partida
      */
     private JTextArea logText;
-    
+
     /**
      * Botão da desistencia
      */
     private JButton concede;
-    
+
     /**
      * Objeto da classe CBController
      */
     private CBController cb;
-    
+
     /**
      * Flag para sinalizar se o jogador é o host da partida
      */
     private boolean isHost;
-    
+
     /**
      * Objeto da classe CheckerBoard
      */
     private CheckerBoard checkerBoard;
-    
+
     /**
      * Componente que exibe de quem é o turno
      */
     private JLabel turn;
-    
-    
+
     /**
      * Menu de opções principais
      */
-    private MenuOptions mo;
 
     /**
      * Main
-     * 
-     * @param args 
+     *
+     * @param args
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -104,7 +101,7 @@ public class MainFrame extends JFrame {
 
         cb = new CBController();
         createMenu();
-        
+
         createTextArea();
         createButton();
         createLabel();
@@ -201,10 +198,6 @@ public class MainFrame extends JFrame {
         menu.add(connect);
         this.menuBar.add(menu);
         this.setJMenuBar(menuBar);
-        
-        mo = new MenuOptions();
-        add(mo);
-        mo.requestFocusInWindow();   
 
     }
 
@@ -287,7 +280,5 @@ public class MainFrame extends JFrame {
     void clearLog() {
         this.logText.setText("");
     }
-    
-    
 
 }

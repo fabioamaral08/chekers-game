@@ -165,6 +165,7 @@ public class CBController {
             this.mf.setTitle("Damas");
             this.mf.getConcede().setEnabled(false);
             this.mf.getMenu().setEnabled(true);
+            this.mf.clearLog();
             this.con.disconnect();
             this.con.setMyTurn(false);
             return;

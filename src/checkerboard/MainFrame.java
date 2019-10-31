@@ -4,6 +4,7 @@
 package checkerboard;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -98,6 +99,7 @@ public class MainFrame extends JFrame {
      * Construtor da classe
      */
     public MainFrame() {
+        this.setBackground(Color.BLACK);
         this.setTitle("Damas");
         isHost = false;
         setSize(new Dimension(850, 660));

@@ -181,7 +181,7 @@ public class MainFrame extends JFrame {
         this.clear.setSize(200, CheckerBoard.HOUSE_SIDE / 2);
         this.clear.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 6 * CheckerBoard.HOUSE_SIDE + CheckerBoard.HOUSE_SIDE / 2);
         this.clear.setFont(new Font("Dialog", Font.BOLD, 15));
-        this.clear.setEnabled(false);
+        this.clear.setEnabled(true);
         
         
         add(clear);

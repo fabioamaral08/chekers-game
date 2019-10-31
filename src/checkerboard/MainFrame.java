@@ -45,6 +45,12 @@ public class MainFrame extends JFrame {
      * Botão da desistencia
      */
     private JButton concede;
+    
+    /**
+     * Botão de limpar jogadas
+     */
+    
+    private JButton clear;
 
     /**
      * Objeto da classe CBController
@@ -134,6 +140,13 @@ public class MainFrame extends JFrame {
                 clearLog();
             }
         });
+        
+        clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearLog();
+            }
+        });
     }
 
     /**
@@ -147,7 +160,7 @@ public class MainFrame extends JFrame {
         this.logText.setFont(new Font("Dialog", Font.BOLD, 12));
         JScrollPane scroll = new JScrollPane(logText);
         scroll.setBorder(BorderFactory.createTitledBorder("Histórico de Jogadas"));
-        scroll.setSize(200, 7 * CheckerBoard.HOUSE_SIDE);
+        scroll.setSize(200, 6 * CheckerBoard.HOUSE_SIDE);
         scroll.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, CheckerBoard.HOUSE_SIDE / 2);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
@@ -163,7 +176,15 @@ public class MainFrame extends JFrame {
         this.concede.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 7 * CheckerBoard.HOUSE_SIDE + CheckerBoard.HOUSE_SIDE / 2);
         this.concede.setFont(new Font("Dialog", Font.BOLD, 15));
         this.concede.setEnabled(false);
-
+        
+        this.clear = new JButton("Limpar Jogadas");
+        this.clear.setSize(200, CheckerBoard.HOUSE_SIDE / 2);
+        this.clear.setLocation(CheckerBoard.HOUSE_SIDE * 9 - 15, 6 * CheckerBoard.HOUSE_SIDE + CheckerBoard.HOUSE_SIDE / 2);
+        this.clear.setFont(new Font("Dialog", Font.BOLD, 15));
+        this.clear.setEnabled(false);
+        
+        
+        add(clear);
         add(concede);
 
     }

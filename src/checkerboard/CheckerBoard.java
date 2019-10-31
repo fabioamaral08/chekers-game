@@ -162,7 +162,7 @@ public class CheckerBoard extends JPanel {
         colors.add(Color.YELLOW);
         colors.add(Color.CYAN);
         colors.add(Color.ORANGE);
-        colors.add(Color.MAGENTA);
+        colors.add(Color.MAGENTA.darker());
         colors.add(Color.RED);
 
         return colors;

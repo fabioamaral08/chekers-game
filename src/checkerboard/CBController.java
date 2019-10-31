@@ -187,7 +187,7 @@ public class CBController {
         if (!endGame()) {
             if (!this.game.isPossible2Move()) {
                 Move m = new Move(null, 0, null, move.getBoard());
-                JOptionPane.showMessageDialog(mf, "Você não possui movimentos válidos\nPerdeu a vez!");
+                JOptionPane.showMessageDialog(mf, "Você não possui movimentos válidos\nPERDEU A VEZ!");
                 this.con.setMyTurn(true);
                 movePiece(m);
             }
@@ -231,9 +231,9 @@ public class CBController {
     public boolean endGame() {
         if (this.game.isEndGame()) {
             if (this.game.isWinner()) {
-                JOptionPane.showMessageDialog(null, "Parabéns, você é o vencedor");
+                JOptionPane.showMessageDialog(null, "Parabéns, você venceu!!!");
             } else {
-                JOptionPane.showMessageDialog(null, "Você foi derrotado");
+                JOptionPane.showMessageDialog(null, "Você foi derrotado!!!");
             }
 
             this.con.disconnect();
